@@ -2,6 +2,42 @@ body {
     background-color: rgba(247, 251, 255, 0.981);
 }
 
+.legend-particle-control {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    margin-bottom: 30px;
+    float: left;
+    width: 100%;
+    text-align: center;
+}
+
+label {
+    display: inline-block;
+    width: 110px;
+    padding-right: 20px;
+}
+
+input {
+    display: inline-block;
+}
+
+.particle-control {
+    display: block;
+    min-width: 20%;
+    width: 300px;
+    height: 300px;
+    margin-left: 70%;
+    margin-right: 10%;
+    margin-top: 10%;
+    background-color: rgb(127, 194, 127);
+    padding: 2em;
+}
+
+#id-particle-number {
+    margin-bottom: 50px;
+}
+
 h1 {
     text-align: center;
 }
@@ -11,5 +47,5 @@ h {
 }
 
 p {
-    color: red;
+    color: rgb(6, 1, 1);
 }
