@@ -53,3 +53,13 @@ h {
 p {
     color: rgb(6, 1, 1);
 }
+
+#dot {
+    height: 25px;
+    width: 25px;
+    background-color: gray;
+    border-radius: 50%;
+    position: absolute;
+    top: 500px;
+    left: 400px;
+}
