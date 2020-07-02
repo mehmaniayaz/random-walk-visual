@@ -39,6 +39,12 @@ input {
 #id-particle-number {
     margin-bottom: 50px;
 }
+#id-particle-distance {
+    margin-bottom: 50px;
+}
+#id-particle-speed {
+    margin-bottom: 50px;
+}
 
 h1 {
     text-align: center;
