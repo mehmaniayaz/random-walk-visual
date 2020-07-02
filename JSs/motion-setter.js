@@ -1,6 +1,6 @@
 // TODO: figure out how to read the HTML file in Node.js for debugging purposes
 
-var first_dot = compStyle=topValue=[]
+var first_dot = compStyle=topValue=i=[]
 var distance = 30; //distance in pixel that the dot travels at each time step
 n_particles = document.getElementById("id-particle-number").value;
 var timeoutID = null;
@@ -30,10 +30,41 @@ function setPosition(){
     timedoutID = setTimeout(setPosition,1000)
 }
 
-function addDot(){
-    var x = document.createElement('span');
-    x.innerHTML = '<span id="dot"></span>';
-    document.body.appendChild(x);
+/*
+n: number of random particles to create
+*/
+function addDot(n){
+    for (i=1;i<=n;i++){
+
+        //TODO: refactor the position setter of a new dot into a function
+        angle = Math.random()*2*Math.PI;
+        x_position = 400 + Math.sin(angle)*distance;
+        y_position = 500 + Math.cos(angle)*distance;
+        var x = document.createElement('div');
+        x.setAttribute("id","dot" + i)
+        x.style.width = '25px';
+        x.style.height = '25px';
+        x.style.top = y_position + 'px';
+        x.style.left = x_position + 'px';
+        x.style.backgroundColor = 'red';
+        x.style.position = 'absolute';
+        x.style.borderRadius = '50%'
+
+
+
+        // x.setAttribute('height','25px');
+        // x.setAttribute('width','25px');
+        // x.setAttribute('top',y_position + 'px')
+        // x.setAttribute('left',x_position + 'px')
+        // x.setAttribute('background-color','red')
+        // x.setAttribute('position','absolute')
+        // x.setAttribute('border-radius','50%')
+
+        // x.innerHTML = '<span id='+x.id + '></span>';
+        document.body.appendChild(x);
+
+    }
+
 
 }
 
@@ -41,6 +72,6 @@ function removeDot(){
 
 }
 
-addDot();
+addDot(2);
 
 setPosition();
