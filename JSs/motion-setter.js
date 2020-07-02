@@ -4,6 +4,11 @@ var first_dot = compStyle=topValue=i=[]
 var distance = 30; //distance in pixel that the dot travels at each time step
 n_particles = document.getElementById("id-particle-number").value;
 var timeoutID = null;
+
+//TODO: create an initial set of objects
+addDot(n_particles)
+
+
 function setPosition(){
     distance = document.getElementById("id-particle-distance").value;
     n_current = n_particles;
@@ -15,23 +20,25 @@ function setPosition(){
     //(2) IF THE NUMBER OF PARTICLES IS SMALLER THAN CURRENT ONES THEN RANDOMLY
     //REMOVE SOME OF THEM BUT DO NOT AFFECT THE REMAINING ONES' TREJECTORY
     if (n_particles>n_current){
+        addDot(n_particles - n_current)
+    }
+    for (i=1;i<=n_particles;i++){
+        angle = Math.random()*2*Math.PI;
+        x_position = Math.sin(angle)*distance;
+        y_position = Math.cos(angle)*distance;
+        dot_i = document.getElementById("dot"+i);
+        compStyle = window.getComputedStyle(dot_i);
+        topValue = compStyle.getPropertyValue("top").replace("px", "");
+        leftValue = compStyle.getPropertyValue("left").replace("px","");
+        dot_i.style.top = (Number(topValue) + y_position) + "px";
+        dot_i.style.left = (Number(leftValue) + x_position) + "px";
 
     }
-
-    angle = Math.random()*2*Math.PI;
-    x_position = Math.sin(angle)*distance;
-    y_position = Math.cos(angle)*distance;
-    first_dot = document.getElementById("dot");
-    compStyle = window.getComputedStyle(first_dot);
-    topValue = compStyle.getPropertyValue("top").replace("px", "");
-    leftValue = compStyle.getPropertyValue("left").replace("px","");
-    first_dot.style.top = (Number(topValue) + y_position) + "px";
-    first_dot.style.left = (Number(leftValue) + x_position) + "px";
     timedoutID = setTimeout(setPosition,1000)
 }
 
 /*
-n: number of random particles to create
+n: number of random particles to creates
 */
 function addDot(n){
     for (i=1;i<=n;i++){
@@ -49,18 +56,6 @@ function addDot(n){
         x.style.backgroundColor = 'red';
         x.style.position = 'absolute';
         x.style.borderRadius = '50%'
-
-
-
-        // x.setAttribute('height','25px');
-        // x.setAttribute('width','25px');
-        // x.setAttribute('top',y_position + 'px')
-        // x.setAttribute('left',x_position + 'px')
-        // x.setAttribute('background-color','red')
-        // x.setAttribute('position','absolute')
-        // x.setAttribute('border-radius','50%')
-
-        // x.innerHTML = '<span id='+x.id + '></span>';
         document.body.appendChild(x);
 
     }
@@ -71,7 +66,5 @@ function addDot(n){
 function removeDot(){
 
 }
-
-addDot(2);
 
 setPosition();
