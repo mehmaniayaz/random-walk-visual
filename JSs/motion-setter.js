@@ -4,7 +4,7 @@ var first_dot = compStyle=topValue=i=[]
 // const x_initial_position = 400; const y_initial_position = 500;
 var distance = 30; //distance in pixel that the dot travels at each time step
 n_particles = Number(document.getElementById("id-particle-number").value);
-var timeoutID = null;
+var timeoutID = color=null;
 
 //TODO: create an initial set of objects
 addDot(0,n_particles)
@@ -56,7 +56,7 @@ function addDot(n_current,n){
         x.style.height = '25px';
         x.style.top = y_position + 'px';
         x.style.left = x_position + 'px';
-        x.style.backgroundColor = 'red';
+        x.style.backgroundColor = randomColor(); 
         x.style.position = 'absolute';
         x.style.borderRadius = '50%'
         document.body.appendChild(x);
@@ -69,5 +69,13 @@ function addDot(n_current,n){
 function removeDot(){
 
 }
+
+function randomColor() { 
+    r1 = Math.floor(Math.random() * 255) 
+    r2 = Math.floor(Math.random() * 255) 
+    r3 = Math.floor(Math.random() * 255) 
+    return 'rgb(' + r1 + "," + r2 + "," + r3 + ')';
+}
+
 
 setPosition();
