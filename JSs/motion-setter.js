@@ -1,7 +1,7 @@
 // TODO: figure out how to read the HTML file in Node.js for debugging purposes
 
 var first_dot = compStyle=topValue=i=[]
-const x_initial_position = 400; const y_initial_position = 500;
+// const x_initial_position = 400; const y_initial_position = 500;
 var distance = 30; //distance in pixel that the dot travels at each time step
 n_particles = Number(document.getElementById("id-particle-number").value);
 var timeoutID = null;
@@ -46,8 +46,10 @@ function addDot(n_current,n){
 
         //TODO: refactor the position setter of a new dot into a function
         angle = Math.random()*2*Math.PI;
-        x_position = x_initial_position + Math.sin(angle)*distance;
-        y_position = y_initial_position + Math.cos(angle)*distance;
+        // x_position = x_initial_position + Math.sin(angle)*distance;
+        // y_position = y_initial_position + Math.cos(angle)*distance;
+        x_position = screen.availWidth*Math.random();
+        y_position = screen.availHeight* Math.random();
         var x = document.createElement('div');
         x.setAttribute("id","dot" + i)
         x.style.width = '25px';
