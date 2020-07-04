@@ -2,9 +2,11 @@
 
 var first_dot = compStyle=topValue=i=[]
 // const x_initial_position = 400; const y_initial_position = 500;
-var distance = 30; //distance in pixel that the dot travels at each time step
+var distance = []; //distance in pixel that the dot travels at each time step
 n_particles = Number(document.getElementById("id-particle-number").value);
 var timeoutID = color=null;
+var purple ='rgb(128,0,128)';var distance_interval = 100; var step_delay_time = 30000;
+var x_end_position = y_end_position = dx = dy = end_distance = []
 
 //TODO: create an initial set of objects
 addDot(0,n_particles)
@@ -25,17 +27,30 @@ function setPosition(){
     }
     for (i=1;i<=n_particles;i++){
         angle = Math.random()*2*Math.PI;
-        x_position = Math.sin(angle)*distance;
-        y_position = Math.cos(angle)*distance;
-        dot_i = document.getElementById("dot"+i);
-        compStyle = window.getComputedStyle(dot_i);
-        topValue = compStyle.getPropertyValue("top").replace("px", "");
-        leftValue = compStyle.getPropertyValue("left").replace("px","");
-        dot_i.style.top = (Number(topValue) + y_position) + "px";
-        dot_i.style.left = (Number(leftValue) + x_position) + "px";
+        x_end_distance[i] = Math.sin(angle)*distance;
+        y_end_distance[i] = Math.cos(angle)*distance;
+        dx[i] = x_end_distance/distance_interval;
+        dy[i] = y_end_distance/distance_interval;
+        end_distance=0;
 
+        while (end_distance<=distance){
+            miniStep();
+            timedoutID = setTimeout(step_delay_time/distance_interval);
+        }
     }
-    timedoutID = setTimeout(setPosition,1000)
+   
+    //TODO: CREATE A MODULE FOR THIS
+    function miniStep(){
+        for (i=1;i<=n_particles;i++){            
+            dot_i = document.getElementById("dot"+i);
+            compStyle = window.getComputedStyle(dot_i);
+            topValue = compStyle.getPropertyValue("top").replace("px", "");
+            leftValue = compStyle.getPropertyValue("left").replace("px","");
+            dot_i.style.top = (Number(topValue) + dy[i]) + "px";
+            dot_i.style.left = (Number(leftValue) + dx[i]) + "px";
+            end_distance[i] +=distance/distance_interval;
+        }
+    }
 }
 
 /*
@@ -56,7 +71,8 @@ function addDot(n_current,n){
         x.style.height = '25px';
         x.style.top = y_position + 'px';
         x.style.left = x_position + 'px';
-        x.style.backgroundColor = randomColor(); 
+        // x.style.backgroundColor = randomColor(); 
+        x.style.backgroundColor = 'purple'; 
         x.style.position = 'absolute';
         x.style.borderRadius = '50%'
         document.body.appendChild(x);
