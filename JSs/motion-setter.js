@@ -6,7 +6,7 @@ var distance = []; //distance in pixel that the dot travels at each time step
 n_particles = Number(document.getElementById("id-particle-number").value);
 var timeoutID = color=null;
 var purple ='rgb(128,0,128)';var distance = 10;//pixels
-var n_distance_interval = 3;
+var n_distance_interval = 20;
 var step_delay_time = 10;//move the circles one millisecond at a time
 var x_end_position = [];y_end_position=[];dx=[];dy=[];end_distance=[];x_end_distance=[];y_end_distance=[];
 //TODO: create an initial set of objects
@@ -55,11 +55,11 @@ function setPosition(){
                 dot_i.style.left = (Number(leftValue) + dx[i]) + "px";                
             }
             end_distance +=distance/n_distance_interval;
-            setTimeout(step_delay_time)
-            return miniStep()
+            setTimeout(miniStep,step_delay_time)
+            // return miniStep()
         }
     }
-    return setPosition()
+    setTimeout(setPosition,1000)
 }
 
 /*
