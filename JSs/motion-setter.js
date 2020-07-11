@@ -5,9 +5,10 @@ var first_dot = compStyle=topValue=i=[]
 var distance = []; //distance in pixel that the dot travels at each time step
 n_particles = Number(document.getElementById("id-particle-number").value);
 var timeoutID = color=null;
-var purple ='rgb(128,0,128)';var distance_interval = 100; var step_delay_time = 1000;
-var x_end_position=y_end_position=dx=dy=end_distance=x_end_distance=y_end_distance=[]
-
+var purple ='rgb(128,0,128)';var distance = 10;//pixels
+var n_distance_interval = 3;
+var step_delay_time = 10;//move the circles one millisecond at a time
+var x_end_position = [];y_end_position=[];dx=[];dy=[];end_distance=[];x_end_distance=[];y_end_distance=[];
 //TODO: create an initial set of objects
 addDot(0,n_particles)
 
@@ -25,17 +26,23 @@ function setPosition(){
     if (n_particles>n_current){
         addDot(n_current,n_particles - n_current)
     }
+    //TODO: if n_particles<n_current remove some of the particles without disturbing the others' trajectory
     for (i=1;i<=n_particles;i++){
         angle = Math.random()*2*Math.PI;
-        x_end_distance[i] = Math.sin(angle)*distance;
-        y_end_distance[i] = Math.cos(angle)*distance;
-        dx[i] = x_end_distance[i]/distance_interval;
-        dy[i] = y_end_distance[i]/distance_interval;
+        dot_i = document.getElementById("dot"+i);
+        compStyle = window.getComputedStyle(dot_i);
+        topValue = compStyle.getPropertyValue("top").replace("px", "");
+        leftValue = compStyle.getPropertyValue("left").replace("px","");
+
+        x_end_distance[i] = Number(leftValue) + Math.sin(angle)*distance;
+        y_end_distance[i] = Number(topValue) + Math.cos(angle)*distance;
+        dx[i] = Math.floor((x_end_distance[i]-Number(leftValue))/n_distance_interval);
+        dy[i] = Math.floor((y_end_distance[i]-Number(topValue))/n_distance_interval);
         end_distance=0;
-        miniStep();
-        
     }
-   
+
+    miniStep()
+
     //TODO: CREATE A MODULE FOR THIS
     function miniStep(){
         if (end_distance<=distance){
@@ -47,11 +54,12 @@ function setPosition(){
                 dot_i.style.top = (Number(topValue) + dy[i]) + "px";
                 dot_i.style.left = (Number(leftValue) + dx[i]) + "px";                
             }
-            end_distance +=distance/distance_interval;
-            timedoutID = setTimeout(miniStep,step_delay_time/distance_interval);        
+            end_distance +=distance/n_distance_interval;
+            setTimeout(step_delay_time)
+            return miniStep()
         }
     }
-    timedoutID = setTimeout(setPosition,0); 
+    return setPosition()
 }
 
 /*
@@ -64,8 +72,10 @@ function addDot(n_current,n){
         angle = Math.random()*2*Math.PI;
         // x_position = x_initial_position + Math.sin(angle)*distance;
         // y_position = y_initial_position + Math.cos(angle)*distance;
-        x_position = screen.availWidth*Math.random();
-        y_position = screen.availHeight* Math.random();
+        x_position = Math.ceil(screen.availWidth/2);
+        // x_position = screeen.availWidth*Math.random();
+        y_position = Math.ceil(screen.availWidth/5);
+        // y_position = screen.availHeight* Math.random();
         var x = document.createElement('div');
         x.setAttribute("id","dot" + i)
         x.style.width = '25px';
