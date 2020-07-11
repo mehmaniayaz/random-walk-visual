@@ -7,7 +7,7 @@ n_particles = Number(document.getElementById("id-particle-number").value);
 var timeoutID = color=null;
 var purple ='rgb(128,0,128)';var distance = 10;//pixels
 var n_distance_interval = 20;
-var step_delay_time = 10;//move the circles one millisecond at a time
+var step_delay_time = 100;//move the circles one millisecond at a time
 var x_end_position = [];y_end_position=[];dx=[];dy=[];end_distance=[];x_end_distance=[];y_end_distance=[];
 //TODO: create an initial set of objects
 addDot(0,n_particles)
@@ -56,10 +56,9 @@ function setPosition(){
             }
             end_distance +=distance/n_distance_interval;
             setTimeout(miniStep,step_delay_time)
-            // return miniStep()
         }
     }
-    setTimeout(setPosition,1000)
+    setTimeout(setPosition,0)
 }
 
 /*
