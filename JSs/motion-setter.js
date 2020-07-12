@@ -56,7 +56,7 @@ function setPosition(){
                 dot_i.style.left = (Number(leftValue) + dx[i]) + "px";                
             }
             end_distance +=distance/n_distance_interval;
-            console.log(end_distance)
+            console.log(dx**2 + dy**2)//print this out - might be a good idea to start writing tests and modularize the code
             setTimeout(miniStep,step_delay_time)
             //keep the execution stuck here...
         }
