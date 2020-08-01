@@ -1,5 +1,6 @@
+import * as allVars from "./modules/constVars.js"
 import {addDot} from "./modules/dotManipulation.js"
-import * as constVars from "./modules/constVars.js"
+
 
 
 var n_particles = Number(document.getElementById("id-particle-number").value);

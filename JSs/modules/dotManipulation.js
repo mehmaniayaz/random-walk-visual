@@ -1,4 +1,7 @@
+import * as allVars from "./constVars.js";
+console.log(allVars.i)
 export {addDot}
+
 
 function addDot(n_current,n){
     for (i=n_current+1;i<=(n_current + n);i++){
