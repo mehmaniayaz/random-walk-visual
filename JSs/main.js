@@ -2,7 +2,7 @@ import {addDot} from "./modules/dotManipulation.js"
 import * as constVars from "./modules/constVars.js"
 
 
-n_particles = Number(document.getElementById("id-particle-number").value);
+var n_particles = Number(document.getElementById("id-particle-number").value);
 
 //TODO: create an initial set of objects
 addDot(0,n_particles)
