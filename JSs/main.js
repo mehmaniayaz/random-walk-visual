@@ -1,10 +1,14 @@
-import * as allVars from "./modules/constVars.js"
 import {addDot} from "./modules/dotManipulation.js"
-
-
-
+var compStyle=[],topValue=[],leftValue=[],i=[],n_current=0
+var distance = []; //distance in pixel that the dot travels at each time step
+var step_delay_time = 10;//move the circles one millisecond at a time
 var n_particles = Number(document.getElementById("id-particle-number").value);
-
+var dx=[],dy=[],end_distance=[],x_end_distance=[],y_end_distance=[]
+var angle=0,dot_i=[]
+var distance = 10;//pixels
+var purple ='rgb(128,0,128)';
+var n_distance_interval = 10;
+var step_delay_time = 10;//move the circles one millisecond at a time
 //TODO: create an initial set of objects
 addDot(0,n_particles)
 
@@ -50,7 +54,6 @@ function setPosition(){
                 dot_i.style.left = (Number(leftValue) + dx[i]) + "px";                
             }
             end_distance +=distance/n_distance_interval;
-            console.log(dx**2 + dy**2)//print this out - might be a good idea to start writing tests and modularize the code
             setTimeout(miniStep,step_delay_time)
             //keep the execution stuck here...
         }

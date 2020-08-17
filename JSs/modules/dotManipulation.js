@@ -1,5 +1,4 @@
-import * as allVars from "./constVars.js";
-console.log(allVars.i)
+var i=0, angle=0,x_position=0,y_position=0
 export {addDot}
 
 
