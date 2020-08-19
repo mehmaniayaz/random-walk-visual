@@ -12,6 +12,19 @@ var step_delay_time = 10;//move the circles one millisecond at a time
 //TODO: create an initial set of objects
 addDot(0,n_particles)
 
+let elem = document.getElementById("box-container")
+let coords = elem.getBoundingClientRect()
+let x_bounding_left = coords['left']
+let x_bounding_right = coords['right']
+let y_bounding_top = coords['top']
+let y_bounding_down = coords['bottom']
+
+console.log(coords)
+console.log("left bound x: ",x_bounding_left)
+console.log("right bound x: ",x_bounding_right)
+console.log("top bound y:", y_bounding_top)
+console.log("bottom bound y:", y_bounding_down)
+
 function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
     n_current = n_particles;
