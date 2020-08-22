@@ -1,4 +1,12 @@
 var i=0, angle=0,x_position=0,y_position=0
+//obtain the coordinates of the bounding box for particles to remain within
+let elem = document.getElementById("box-container")
+let coords = elem.getBoundingClientRect()
+let x_bounding_left = coords['left']
+let x_bounding_right = coords['right']
+let y_bounding_top = coords['top']
+let y_bounding_bottom = coords['bottom']
+
 export {addDot}
 
 
@@ -7,9 +15,9 @@ function addDot(n_current,n){
 
         //TODO: refactor the position setter of a new dot into a function
         angle = Math.random()*2*Math.PI;
-        x_position = Math.ceil(screen.availWidth/2);
+        x_position = x_bounding_left + Math.ceil((x_bounding_right-x_bounding_left)/2);
         // x_position = screeen.availWidth*Math.random();
-        y_position = Math.ceil(screen.availWidth/5);
+        y_position = y_bounding_bottom + Math.ceil((y_bounding_top-y_bounding_bottom)/2);
         // y_position = screen.availHeight* Math.random();
         var x = document.createElement('div');
         x.setAttribute("id","dot" + i)

@@ -12,18 +12,19 @@ var step_delay_time = 10;//move the circles one millisecond at a time
 //TODO: create an initial set of objects
 addDot(0,n_particles)
 
+
+//obtain the coordinates of the bounding box for particles to remain within
 let elem = document.getElementById("box-container")
 let coords = elem.getBoundingClientRect()
 let x_bounding_left = coords['left']
 let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
-let y_bounding_down = coords['bottom']
+let y_bounding_bottom = coords['bottom']
 
-console.log(coords)
-console.log("left bound x: ",x_bounding_left)
-console.log("right bound x: ",x_bounding_right)
-console.log("top bound y:", y_bounding_top)
-console.log("bottom bound y:", y_bounding_down)
+
+var x_distance=0, y_distance=0
+var within_boundary=false
+
 
 function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
@@ -46,16 +47,37 @@ function setPosition(){
         compStyle = window.getComputedStyle(dot_i);
         topValue = compStyle.getPropertyValue("top").replace("px", "");
         leftValue = compStyle.getPropertyValue("left").replace("px","");
+        x_distance =  Math.cos(angle)*distance
+        y_distance = Math.sin(angle)*distance
 
-        x_end_distance[i] = Number(leftValue) + Math.cos(angle)*distance;
-        y_end_distance[i] = Number(topValue) + Math.sin(angle)*distance;
-        dx[i] = Math.floor((x_end_distance[i]-Number(leftValue))/n_distance_interval);
-        dy[i] = Math.floor((y_end_distance[i]-Number(topValue))/n_distance_interval);
+        within_boundary = true
+        if ((Number(leftValue) + x_distance)>x_bounding_right){
+            within_boundary = false
+            x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+x_distance-x_bounding_right);
+
+        } else if ((Number(leftValue) + x_distance)<x_bounding_left){
+            within_boundary = false
+            x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+x_distance-x_bounding_left);
+        }
+
+        if ((Number(topValue) + y_distance)<y_bounding_top){
+            within_boundary = false
+            y_end_distance[i] = y_bounding_bottom -  Math.abs(Number(topValue)+y_distance-y_bounding_top);
+
+        } else if ((Number(topValue) + y_distance)>y_bounding_bottom){
+            within_boundary = false
+            y_end_distance[i] = y_bounding_top + Math.abs(Number(topValue)+y_distance-y_bounding_bottom);
+        }
+
+        if (within_boundary){
+            x_end_distance[i] = Number(leftValue) + Math.cos(angle)*distance;
+            y_end_distance[i] = Number(topValue) + Math.sin(angle)*distance;
+        }
+
     }
 
     miniStep()
 
-    //TODO: CREATE A MODULE FOR THIS
     function miniStep(){
         if (end_distance<=distance){
             for (i=1;i<=n_particles;i++){            
@@ -63,12 +85,14 @@ function setPosition(){
                 compStyle = window.getComputedStyle(dot_i);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");
-                dot_i.style.top = (Number(topValue) + dy[i]) + "px";
-                dot_i.style.left = (Number(leftValue) + dx[i]) + "px";                
+                // dot_i.style.top = (Number(topValue) + dy[i]) + "px";
+                // dot_i.style.left = (Number(leftValue) + dx[i]) + "px";
+
+                dot_i.style.top = y_end_distance[i] + "px";
+                dot_i.style.left = x_end_distance[i] + "px";                  
             }
             end_distance +=distance/n_distance_interval;
             setTimeout(miniStep,step_delay_time)
-            //keep the execution stuck here...
         }
     }
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
@@ -90,6 +114,3 @@ function randomColor() {
 }
 
 setPosition()
-// while (true){
-//     setTimeout(setPosition,0)
-// }
