@@ -35,12 +35,15 @@ input {
 
 #box-container{
     float: left;
-    background-color: blue;
+    /* background-color:white; */
     min-width: 20%;
     margin-left: 2%;
     width: 800px;
     height: 600px;
     margin-top: 1%;
+    outline-color: black;
+    outline-width: 1px;
+    outline-style: solid;
 
 }
 

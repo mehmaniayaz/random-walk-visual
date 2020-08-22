@@ -24,6 +24,8 @@ let y_bounding_bottom = coords['bottom']
 
 var x_distance=0, y_distance=0
 var within_boundary=false
+var rand_ceil_or_floor_x=0
+var rand_ceil_or_floor_y=0
 
 
 function setPosition(){
@@ -47,9 +49,20 @@ function setPosition(){
         x_distance =  Math.cos(angle)*distance
         y_distance = Math.sin(angle)*distance
 
-        dx[i] = Math.ceil(x_distance/n_distance_interval)
-        dy[i] = Math.ceil(y_distance/n_distance_interval)
+        rand_ceil_or_floor_x = -0.5 + Math.random()
+        rand_ceil_or_floor_y = -0.5 + Math.random()
 
+        if (rand_ceil_or_floor_x<0){
+            dx[i] = Math.floor(x_distance/n_distance_interval)
+        }else{
+            dx[i] = Math.ceil(x_distance/n_distance_interval)
+        }
+        if (rand_ceil_or_floor_y<0){
+            dy[i] = Math.floor(y_distance/n_distance_interval)
+        }else{
+            dy[i] = Math.ceil(y_distance/n_distance_interval)
+        }
+        console.log('dx[i]: ',dx[i])
     }
 
     miniStep()
@@ -65,20 +78,24 @@ function setPosition(){
                 within_boundary = true
                 if ((Number(leftValue) + dx[i])>x_bounding_right){
                     within_boundary = false
-                    x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
+                    x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
+                    dx[i] = -dx[i]
 
                 } else if ((Number(leftValue) + dx[i])<x_bounding_left){
                     within_boundary = false
-                    x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
+                    x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
+                    dx[i] = -dx[i]
                 }
 
                 if ((Number(topValue) + dy[i])<y_bounding_top){
                     within_boundary = false
-                    y_end_distance[i] = y_bounding_bottom -  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
+                    y_end_distance[i] = y_bounding_top +  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
+                    dy[i]=-dy[i]
 
                 } else if ((Number(topValue) + dy[i])>y_bounding_bottom){
                     within_boundary = false
-                    y_end_distance[i] = y_bounding_top + Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
+                    y_end_distance[i] = y_bounding_bottom - Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
+                    dy[i]=-dy[i]
                 }
 
                 if (within_boundary){
