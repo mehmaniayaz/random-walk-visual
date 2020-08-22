@@ -1,5 +1,5 @@
-import {addDot} from "./modules/dotManipulation.js"
-var compStyle=[],topValue=[],leftValue=[],i=[],n_current=0
+import {addDot,removeDot} from "./modules/dotManipulation.js"
+var compStyle=[],topValue=[],leftValue=[],i=[],n_previous=0
 var distance = []; //distance in pixel that the dot travels at each time step
 var step_delay_time = 10;//move the circles one millisecond at a time
 var n_particles = Number(document.getElementById("id-particle-number").value);
@@ -30,7 +30,7 @@ var rand_ceil_or_floor_y=0
 
 function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
-    n_current = n_particles;
+    n_previous = n_particles;
     n_particles = Number(document.getElementById("id-particle-number").value);
     //INPUT NUMBER OF PARTICLES 
     //IF NUMBER OF PARTICLES ARE DIFFERENT THAN CURRENT NUMBER THEN 
@@ -38,10 +38,13 @@ function setPosition(){
     //ADD MORE PARTICLES WITHOUT CHANGING THE CURRENT OBJECTS TREJECTORY
     //(2) IF THE NUMBER OF PARTICLES IS SMALLER THAN CURRENT ONES THEN RANDOMLY
     //REMOVE SOME OF THEM BUT DO NOT AFFECT THE REMAINING ONES' TREJECTORY
-    if (n_particles>n_current){
-        addDot(n_current,n_particles - n_current)
+    if (n_particles>n_previous){
+        addDot(n_previous,n_particles - n_previous)
     }
-    //TODO: if n_particles<n_current remove some of the particles without disturbing the others' trajectory
+    if (n_particles<n_previous){
+        removeDot(n_previous,n_previous-n_particles)
+    }
+    dx=[],dy=[],x_end_distance=[],y_end_distance=[]
     end_distance = 0;
     for (i=1;i<=n_particles;i++){
         angle = Math.random()*2*Math.PI;
@@ -52,6 +55,7 @@ function setPosition(){
         rand_ceil_or_floor_x = -0.5 + Math.random()
         rand_ceil_or_floor_y = -0.5 + Math.random()
 
+        //this is to avoid directional bias for the random walkers
         if (rand_ceil_or_floor_x<0){
             dx[i] = Math.floor(x_distance/n_distance_interval)
         }else{
@@ -62,7 +66,6 @@ function setPosition(){
         }else{
             dy[i] = Math.ceil(y_distance/n_distance_interval)
         }
-        console.log('dx[i]: ',dx[i])
     }
 
     miniStep()
@@ -113,13 +116,6 @@ function setPosition(){
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
 }
 
-/*
-n: number of random particles to creates
-*/
-
-function removeDot(){
-
-}
 
 function randomColor() { 
     r1 = Math.floor(Math.random() * 255) 

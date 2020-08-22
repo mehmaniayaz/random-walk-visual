@@ -7,11 +7,13 @@ let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
-export {addDot}
+export {addDot,removeDot}
 
 
-function addDot(n_current,n){
-    for (i=n_current+1;i<=(n_current + n);i++){
+function addDot(n_previous,dn){
+    //n: number of new dots to add
+    //n_current: number of current dots
+    for (i=n_previous+1;i<=(n_previous + dn);i++){
 
         //TODO: refactor the position setter of a new dot into a function
         angle = Math.random()*2*Math.PI;
@@ -32,4 +34,16 @@ function addDot(n_current,n){
         document.body.appendChild(x);
 
     }
+
 }
+
+function removeDot(n_previous,dn){
+    //currently dots are removed last added, last removed. TODO: remove dots randomly
+    for (i=n_previous;i>(n_previous-dn);i--){
+        // Removes an element from the document
+        var element = document.getElementById("dot"+i);
+        element.remove();
+    }
+}
+
+
