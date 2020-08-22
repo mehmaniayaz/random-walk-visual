@@ -43,36 +43,12 @@ function setPosition(){
     end_distance = 0;
     for (i=1;i<=n_particles;i++){
         angle = Math.random()*2*Math.PI;
-        dot_i = document.getElementById("dot"+i);
-        compStyle = window.getComputedStyle(dot_i);
-        topValue = compStyle.getPropertyValue("top").replace("px", "");
-        leftValue = compStyle.getPropertyValue("left").replace("px","");
+        
         x_distance =  Math.cos(angle)*distance
         y_distance = Math.sin(angle)*distance
 
-        within_boundary = true
-        if ((Number(leftValue) + x_distance)>x_bounding_right){
-            within_boundary = false
-            x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+x_distance-x_bounding_right);
-
-        } else if ((Number(leftValue) + x_distance)<x_bounding_left){
-            within_boundary = false
-            x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+x_distance-x_bounding_left);
-        }
-
-        if ((Number(topValue) + y_distance)<y_bounding_top){
-            within_boundary = false
-            y_end_distance[i] = y_bounding_bottom -  Math.abs(Number(topValue)+y_distance-y_bounding_top);
-
-        } else if ((Number(topValue) + y_distance)>y_bounding_bottom){
-            within_boundary = false
-            y_end_distance[i] = y_bounding_top + Math.abs(Number(topValue)+y_distance-y_bounding_bottom);
-        }
-
-        if (within_boundary){
-            x_end_distance[i] = Number(leftValue) + Math.cos(angle)*distance;
-            y_end_distance[i] = Number(topValue) + Math.sin(angle)*distance;
-        }
+        dx[i] = Math.ceil(x_distance/n_distance_interval)
+        dy[i] = Math.ceil(y_distance/n_distance_interval)
 
     }
 
@@ -85,8 +61,30 @@ function setPosition(){
                 compStyle = window.getComputedStyle(dot_i);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");
-                // dot_i.style.top = (Number(topValue) + dy[i]) + "px";
-                // dot_i.style.left = (Number(leftValue) + dx[i]) + "px";
+
+                within_boundary = true
+                if ((Number(leftValue) + dx[i])>x_bounding_right){
+                    within_boundary = false
+                    x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
+
+                } else if ((Number(leftValue) + dx[i])<x_bounding_left){
+                    within_boundary = false
+                    x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
+                }
+
+                if ((Number(topValue) + dy[i])<y_bounding_top){
+                    within_boundary = false
+                    y_end_distance[i] = y_bounding_bottom -  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
+
+                } else if ((Number(topValue) + dy[i])>y_bounding_bottom){
+                    within_boundary = false
+                    y_end_distance[i] = y_bounding_top + Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
+                }
+
+                if (within_boundary){
+                    x_end_distance[i] = Number(leftValue) + dx[i];
+                    y_end_distance[i] = Number(topValue) + dy[i];
+                }
 
                 dot_i.style.top = y_end_distance[i] + "px";
                 dot_i.style.left = x_end_distance[i] + "px";                  
