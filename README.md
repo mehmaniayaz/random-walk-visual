@@ -6,9 +6,12 @@ This project is currently under development. Stay tuned for additional features 
 
 ### Installation
 ```terminal
-1) Install http-server (npm install -g http-server)
-2) Run http-server in terminal (http-server)
+1) Chrome is recommended. 
+2) Install http-server (npm install -g http-server)
+3) Run http-server in terminal (http-server)
 ```
 
 <img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/demo.gif" width="400" />
 
+### Contribute
+Contributions are welcome! Feel free to pull request - for considerable changes, please open an issue. 
