@@ -1,4 +1,5 @@
 import {addDot,removeDot} from "./modules/dotManipulation.js"
+import {scatterPlot} from "./modules/visuals.js"
 var compStyle=[],
     topValue=[],
     leftValue=[],
@@ -15,10 +16,15 @@ var compStyle=[],
     dot_i=[],
     distance = 10,
     purple ='rgb(128,0,128)',
-    n_distance_interval = 10
+    n_distance_interval = 10,
+    x_distance=0,
+    y_distance=0,
+    within_boundary=false,
+    rand_ceil_or_floor_x=0,
+    rand_ceil_or_floor_y=0,
+    n_previous=0
 
-var n_particles = Number(document.getElementById("id-particle-number").value);
-
+n_particles = Number(document.getElementById("id-particle-number").value);
 addDot(0,n_particles)
 
 //obtain the coordinates of the bounding box for particles to remain within
@@ -30,23 +36,12 @@ let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
 
-var x_distance=0, y_distance=0
-var within_boundary=false
-var rand_ceil_or_floor_x=0
-var rand_ceil_or_floor_y=0
-
-
 function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
     step_delay_time = Number(document.getElementById("id-particle-speed").value);
     n_previous = n_particles;
     n_particles = Number(document.getElementById("id-particle-number").value);
-    //INPUT NUMBER OF PARTICLES 
-    //IF NUMBER OF PARTICLES ARE DIFFERENT THAN CURRENT NUMBER THEN 
-    //(1) IF NUMBER OF NEW PARTICLES IS BIGGER THAN CURRENT NUMBER THEN
-    //ADD MORE PARTICLES WITHOUT CHANGING THE CURRENT OBJECTS TREJECTORY
-    //(2) IF THE NUMBER OF PARTICLES IS SMALLER THAN CURRENT ONES THEN RANDOMLY
-    //REMOVE SOME OF THEM BUT DO NOT AFFECT THE REMAINING ONES' TREJECTORY
+
     if (n_particles>n_previous){
         addDot(n_previous,n_particles - n_previous)
     }
@@ -134,3 +129,4 @@ function randomColor() {
 }
 
 setPosition()
+
