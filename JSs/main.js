@@ -22,10 +22,12 @@ var compStyle=[],
     within_boundary=false,
     rand_ceil_or_floor_x=0,
     rand_ceil_or_floor_y=0,
-    n_previous=0
+    n_previous=0,
+    n_particles=0
 
 n_particles = Number(document.getElementById("id-particle-number").value);
 addDot(0,n_particles)
+scatterPlot()
 
 //obtain the coordinates of the bounding box for particles to remain within
 let elem = document.getElementById("box-container")
@@ -129,4 +131,3 @@ function randomColor() {
 }
 
 setPosition()
-
