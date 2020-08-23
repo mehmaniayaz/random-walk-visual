@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Random Walk Visualizer</title>
+    <link rel="stylesheet" href="../CSSs/styles.css" />
+</head>
+
+<body>
+    <div>
+        <h1 class="title"> Random Walk Visualization
+        </h1>
+        <span id="box-container"></span>
+        <span>
+            <fieldset id="particle-control">
+                <legend class="legend-particle-control" align="center">Particle Control</legend>
+                <p>
+                    <label>Particle number</label>
+                    <input type="number" id="id-particle-number" value=3><br>
+                    <label>Particle distance</label>
+                    <input type="number" id="id-particle-distance" value=50><br>
+                    <label>Time-step (ms)</label>
+                    <input type="number" id="id-particle-speed" value=10>
+                </p>
+
+            </fieldset>
+
+        </span>
+        
+    </div>
+    <!-- <div>
+        <span id="dot"></span>
+    </div> -->
+
+    <script type="module" src="../JSs/main.js"></script>
+</body>
+
+
+</html>

@@ -1,0 +1,82 @@
+body {
+    background-color: rgba(247, 251, 255, 0.981);
+}
+
+.legend-particle-control {
+    background-color: rgb(3, 65, 3);
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10%;
+    float: left;
+    text-align: center;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+label {
+    display: inline-block;
+    width: 20%;
+    padding-right: 20%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+    display: inline-block;
+}
+
+#particle-control {
+    float: right;
+    min-width: 20%;
+    margin-right: 3%; 
+    margin-top: 10%;
+    background-color: rgb(127, 194, 127);
+    padding: 2em;
+}
+
+#box-container{
+    float: left;
+    /* background-color:white; */
+    min-width: 20%;
+    margin-left: 2%;
+    width: 800px;
+    height: 600px;
+    margin-top: 1%;
+    outline-color: black;
+    outline-width: 1px;
+    outline-style: solid;
+
+}
+
+#id-particle-number {
+    margin-bottom: 50px;
+}
+#id-particle-distance {
+    margin-bottom: 50px;
+}
+#id-particle-speed {
+    margin-bottom: 50px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h {
+    color: black
+}
+
+p {
+    color: rgb(6, 1, 1);
+}
+
+#dot {
+    height: 25px;
+    width: 25px;
+    background-color: gray;
+    border-radius: 50%;
+    position: absolute;
+    top: 500px;
+    left: 400px;
+}
