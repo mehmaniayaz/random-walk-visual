@@ -1,3 +1,4 @@
 A demonstration of random walkers in a finite domain. 
 
-![](https://github.com/mehmaniayaz/random-walk-visual/blob/master/demo.gif | width=100| height=100)
+<img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/demo.gif" width="40" height="40" />
+
