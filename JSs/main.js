@@ -1,17 +1,25 @@
 import {addDot,removeDot} from "./modules/dotManipulation.js"
-var compStyle=[],topValue=[],leftValue=[],i=[],n_previous=0
-var distance = []; //distance in pixel that the dot travels at each time step
-var step_delay_time = 10;//move the circles one millisecond at a time
-var n_particles = Number(document.getElementById("id-particle-number").value);
-var dx=[],dy=[],end_distance=[],x_end_distance=[],y_end_distance=[]
-var angle=0,dot_i=[]
-var distance = 10;//pixels
-var purple ='rgb(128,0,128)';
-var n_distance_interval = 10;
-var step_delay_time = 10;//move the circles one millisecond at a time
-//TODO: create an initial set of objects
-addDot(0,n_particles)
+var compStyle=[],
+    topValue=[],
+    leftValue=[],
+    i=[],
+    n_previous=0,
+    distance = [], //distance in pixel that the dot travels at each time step
+    step_delay_time = 10,//ms
+    dx=[],
+    dy=[],
+    end_distance=[],
+    x_end_distance=[],
+    y_end_distance=[],
+    angle=0,
+    dot_i=[],
+    distance = 10,
+    purple ='rgb(128,0,128)',
+    n_distance_interval = 10
 
+var n_particles = Number(document.getElementById("id-particle-number").value);
+
+addDot(0,n_particles)
 
 //obtain the coordinates of the bounding box for particles to remain within
 let elem = document.getElementById("box-container")
@@ -30,6 +38,7 @@ var rand_ceil_or_floor_y=0
 
 function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
+    step_delay_time = Number(document.getElementById("id-particle-speed").value);
     n_previous = n_particles;
     n_particles = Number(document.getElementById("id-particle-number").value);
     //INPUT NUMBER OF PARTICLES 
@@ -48,7 +57,7 @@ function setPosition(){
     end_distance = 0;
     for (i=1;i<=n_particles;i++){
         angle = Math.random()*2*Math.PI;
-        
+
         x_distance =  Math.cos(angle)*distance
         y_distance = Math.sin(angle)*distance
 
