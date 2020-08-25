@@ -1,5 +1,5 @@
 export {scatterPlot}
-var dataset=[[0,0]]
+var dataset=[]
 
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -25,7 +25,7 @@ svg.append("g")
 
 // Add Y axis
 var y = d3.scaleLinear()
-    .domain([0, 20])
+    .domain([0, 100])
     .range([ height, 0]);
 svg.append("g")
     .call(d3.axisLeft(y));
@@ -48,19 +48,21 @@ svg.append("text")
     .text("interacted particles")
 /**
  * 
- * @param {integer} newx additional x (elapsed time) of particle
- * @param {integer} newy additional number of interacted particles
+ * @param {integer} new_time additional (elapsed time) of particle
+ * @param {integer} new_particles additional number of interacted particles
  */
-function scatterPlot(newx,newy){
-    dataset.push([newx,newy])
-    svg.selectAll("circle")
-    .data(dataset) 
-    .enter()
-    .append("circle")
-    .attr("cx",function(d){
-        return d[0];})
-    .attr("cy",function(d){
-        return d[1];})
-    .attr("r",7)
-    .attr("fill","red");
+function scatterPlot(new_time,new_particles){
+    if (new_time<5*60){
+        dataset.push([new_time,new_particles])
+        svg.selectAll("circle")
+        .data(dataset) 
+        .enter()
+        .append("circle")
+        .attr("cx",function(d){
+            return x(d[0]);})
+        .attr("cy",function(d){
+            return y(d[1])})
+        .attr("r",7)
+        .attr("fill","red");
+    }
 }
