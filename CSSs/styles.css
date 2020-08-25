@@ -35,7 +35,6 @@ input {
 
 #box-container{
     float: left;
-    /* background-color:white; */
     min-width: 20%;
     margin-left: 2%;
     width: 800px;
@@ -54,6 +53,12 @@ input {
     margin-bottom: 50px;
 }
 #id-particle-speed {
+    margin-bottom: 50px;
+}
+#id-active-particle-number{
+    margin-bottom: 50px;
+}
+#id-activity-strength{
     margin-bottom: 50px;
 }
 
