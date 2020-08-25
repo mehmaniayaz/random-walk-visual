@@ -92,12 +92,17 @@ function setPosition(){
             dy[i] = Math.ceil(y_distance/n_distance_interval)
         }
     }
+    /*TODO: (1) determine the a dictionary of lines for each particle
+            (2) determine which line intersect which one
+            (3)activate inactive particles if they intersect path of active particles (based on activity strength - use default of 100%)*/
 
     miniStep()
 
     function miniStep(){
         if (end_distance<=distance){
-            for (i=1;i<=n_particles;i++){            
+            for (i=1;i<=n_particles;i++){ 
+                //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
+                //point, then based on activity-strenght they interact.            
                 dot_i = document.getElementById("dot"+i);
                 compStyle = window.getComputedStyle(dot_i);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
@@ -132,7 +137,8 @@ function setPosition(){
                 }
 
                 dot_i.style.top = y_end_distance[i] + "px";
-                dot_i.style.left = x_end_distance[i] + "px";                  
+                dot_i.style.left = x_end_distance[i] + "px"; 
+                //if condition then flag that circle as active (red)                 
             }
             end_distance +=distance/n_distance_interval;
             setTimeout(miniStep,step_delay_time)
