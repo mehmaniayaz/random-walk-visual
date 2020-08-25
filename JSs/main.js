@@ -23,11 +23,14 @@ var compStyle=[],
     rand_ceil_or_floor_x=0,
     rand_ceil_or_floor_y=0,
     n_previous=0,
-    n_particles=0
+    n_particles=0,
+    nRedDots=0,
+    nPlotRedDots=10,//total number of nRedDots to be plotted
+    elapsedTime=0
 
 n_particles = Number(document.getElementById("id-particle-number").value);
 addDot(0,n_particles)
-scatterPlot()
+
 
 //obtain the coordinates of the bounding box for particles to remain within
 let elem = document.getElementById("box-container")
@@ -37,8 +40,10 @@ let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
-
+scatterPlot()
 function setPosition(){
+    elapsedTime +=1
+    nRedDots=n_particles
     distance = Number(document.getElementById("id-particle-distance").value);
     step_delay_time = Number(document.getElementById("id-particle-speed").value);
     n_previous = n_particles;
