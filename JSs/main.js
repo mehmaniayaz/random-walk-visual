@@ -15,52 +15,65 @@ var compStyle=[],
     angle=0,
     dot_i=[],
     distance = 10,
-    purple ='rgb(128,0,128)',
+    red ='rgb(255,0,0)',
     n_distance_interval = 10,
     x_distance=0,
     y_distance=0,
     within_boundary=false,
     rand_ceil_or_floor_x=0,
     rand_ceil_or_floor_y=0,
-    n_previous=0,
-    n_particles=0,
-    nRedDots=0,
-    nPlotRedDots=10,//total number of nRedDots to be plotted
+    n_inactive_previous=0,
+    n_inactive_particles=0,
+    n_active_particles=0,
+    n_active_previous=0,
     elapsedTime=0
 
-n_particles = Number(document.getElementById("id-particle-number").value);
-addDot(0,n_particles)
+n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
+addDot(0,n_inactive_particles,active=0)
 
 
 //obtain the coordinates of the bounding box for particles to remain within
-let elem = document.getElementById("box-container")
-let coords = elem.getBoundingClientRect()
-let x_bounding_left = coords['left']
-let x_bounding_right = coords['right']
-let y_bounding_top = coords['top']
-let y_bounding_bottom = coords['bottom']
+let elem = document.getElementById("box-container"),
+    coords = elem.getBoundingClientRect(),
+    x_bounding_left = coords['left'],
+    x_bounding_right = coords['right'],
+    y_bounding_top = coords['top'],
+    y_bounding_bottom = coords['bottom']
 
 scatterPlot()
 function setPosition(){
-    scatterPlot(elapsedTime,n_particles)
+    scatterPlot(elapsedTime,n_active_particles)
     elapsedTime +=1
-    nRedDots=n_particles
     distance = Number(document.getElementById("id-particle-distance").value);
     step_delay_time = Number(document.getElementById("id-particle-speed").value);
     n_previous = n_particles;
     n_particles = Number(document.getElementById("id-particle-number").value);
 
-    if (n_particles>n_previous){
-        addDot(n_previous,n_particles - n_previous)
+    n_inactive_previous = n_active_particles;
+    n_active_particles = Number(document.getElementById("id-active-particle-number").value);
+    activity_strength = Number(document.getElementById("id-activity-strength").value);
+
+    //decide whether to add or remove dots from HTML
+    if (n_inactive_particles>n_inactive_previous){
+        addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=0)
     }
-    if (n_particles<n_previous){
-        removeDot(n_previous,n_previous-n_particles)
+    if (n_inactive_particles<n_inactive_previous){
+        removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=0)
     }
+
+    //decide whether to add or remove active dots from HTML
+    if (n_active_particles>n_active_previous){
+        addDot(n_active_previous,n_active_particles - n_active_previous,active=1)
+    }
+    if (n_active_particles<n_active_previous){
+        removeDot(n_active_previous,n_active_previous-n_active_particles,active=1)
+    }
+
+
     dx=[],dy=[],x_end_distance=[],y_end_distance=[]
     end_distance = 0;
-    for (i=1;i<=n_particles;i++){
+    for (i=1;i<=(n_active_particles+n_inactive_particles);i++){
         angle = Math.random()*2*Math.PI;
-
         x_distance =  Math.cos(angle)*distance
         y_distance = Math.sin(angle)*distance
 
