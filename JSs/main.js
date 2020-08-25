@@ -42,6 +42,7 @@ let y_bounding_bottom = coords['bottom']
 
 scatterPlot()
 function setPosition(){
+    scatterPlot(elapsedTime,n_particles)
     elapsedTime +=1
     nRedDots=n_particles
     distance = Number(document.getElementById("id-particle-distance").value);
