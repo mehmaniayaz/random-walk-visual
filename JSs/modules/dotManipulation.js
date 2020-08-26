@@ -66,13 +66,7 @@ function removeDot(n_previous,dn,status,indices){
     }else{
         for (i=n_previous;i>(n_previous-dn);i--){
             element = document.getElementById("dot-inactive"+indices["inactive"][i-1]);
-            try{
-                element.remove();
-            }catch(err){
-                console.log("error-caught")
-
-            }
-            
+            element.remove();
             indices["inactive"].pop()
         }
 

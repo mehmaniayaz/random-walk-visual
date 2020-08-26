@@ -110,7 +110,9 @@ function setPosition(){
         if (traversed_distance<=distance){
             for (i=0;i<(n_inactive_particles+n_active_particles);i++){ 
                 //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
-                //point, then based on activity-strenght they interact.  
+                //point, then based on activity-strenght they interact. 
+                
+                //first go through inactive particles and then active particles
                 if (i<n_inactive_particles){
                     index=indices["inactive"][i];
                     dot_index = document.getElementById("dot-inactive"+index);
@@ -119,13 +121,8 @@ function setPosition(){
                     index=indices["active"][i-n_inactive_particles];
                     dot_index = document.getElementById("dot-active"+index);
                 }
-                
-                try{
-                    compStyle = window.getComputedStyle(dot_index);
 
-                }catch(err){
-                    console.log("error found")
-                }
+                compStyle = window.getComputedStyle(dot_index);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");
 
