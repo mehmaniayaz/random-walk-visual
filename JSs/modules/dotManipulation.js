@@ -16,29 +16,31 @@ export {addDot,removeDot}
 
 /**
  * 
- * @param {integer} n_total_previous Number of previous-step's dots 
+ * @param {integer} n_previous Number of previous-step's dots for each status
  * @param {integer} dn Number of dots to be added
  * @param {boolean} status true of dot is active, false if inactive
  */
-function addDot(n_total_previous,dn,status,indices){//function parameter list too long - shorten it
-    for (i=n_total_previous+1;i<=(n_total_previous + dn);i++){
+function addDot(n_previous,dn,status,indices){//function parameter list too long - shorten it
+    for (i=n_previous+1;i<=(n_previous + dn);i++){
         angle = Math.random()*2*Math.PI;
         x_position = x_bounding_left + Math.ceil((x_bounding_right-x_bounding_left)/2);
         y_position = y_bounding_bottom + Math.ceil((y_bounding_top-y_bounding_bottom)/2);
         x = document.createElement('div');
-        x.setAttribute("id","dot" + i)
+        if (status){
+            x.style.backgroundColor="darkred"
+            indices["active"].push(i)
+            x.setAttribute("id","dot-active" + i)
+        }else{
+            x.style.backgroundColor = 'darkgreen';
+            indices["inactive"].push(i) 
+            x.setAttribute("id","dot-inactive" + i)
+        }
+
         x.style.width = '25px';
         x.style.height = '25px';
         x.style.top = y_position + 'px';
         x.style.left = x_position + 'px';
 
-        if (status){
-            x.style.backgroundColor="darkred"
-            indices["active"].push(i)
-        }else{
-            x.style.backgroundColor = 'darkgreen';
-            indices["inactive"].push(i) 
-        }
         x.style.position = 'absolute';
         x.style.borderRadius = '50%'
         document.body.appendChild(x);
@@ -57,13 +59,13 @@ function removeDot(n_previous,dn,status,indices){
     //currently dots are removed last added, last removed. TODO: remove dots randomly
     if (status){
         for (i=n_previous;i>(n_previous-dn);i--){
-            element = document.getElementById("dot"+indices["active"][i-1]);//we are using "i-1" since dot-indices start with 1
+            element = document.getElementById("dot-active"+indices["active"][i-1]);//we are using "i-1" since dot-indices start with 1
             element.remove();
             indices["active"].pop()
         }
     }else{
         for (i=n_previous;i>(n_previous-dn);i--){
-            element = document.getElementById("dot"+indices["inactive"][i-1]);
+            element = document.getElementById("dot-inactive"+indices["inactive"][i-1]);
             try{
                 element.remove();
             }catch(err){

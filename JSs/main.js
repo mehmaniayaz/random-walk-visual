@@ -13,7 +13,6 @@ var compStyle=[],
     x_end_position=[],
     y_end_position=[],
     angle=0,
-    dot_i=[],
     distance = 10,
     n_distance_interval = 10,
     x_distance=0,
@@ -28,7 +27,9 @@ var compStyle=[],
     elapsedTime=0,
     active=false,
     activity_strength,
-    indices = {"inactive":[],"active":[]}
+    indices = {"inactive":[],"active":[]},
+    index,
+    dot_index
 
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
 indices= addDot(0,n_inactive_particles,active=false,indices)
@@ -61,7 +62,7 @@ function setPosition(){
     //decide whether to add or remove inactive from HTML
     if (n_inactive_particles>n_inactive_previous){
         //can we shorten this invocation?
-        indices = addDot((n_inactive_previous+n_active_previous),n_inactive_particles - n_inactive_previous,active=false,indices)
+        indices = addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=false,indices)
     }
     if (n_inactive_particles<n_inactive_previous){
         indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=false,indices)
@@ -70,7 +71,7 @@ function setPosition(){
     //decide whether to add or remove active particles from HTML
     if (n_active_particles>n_active_previous){
         //can we shorten this invocation?
-        indices = addDot((n_active_previous+n_inactive_particles),n_active_particles - n_active_previous,active=true,indices)
+        indices = addDot(n_active_previous,n_active_particles - n_active_previous,active=true,indices)
     }
     if (n_active_particles<n_active_previous){
         indices = removeDot(n_active_previous,n_active_previous-n_active_particles,active=true,indices)
@@ -79,7 +80,8 @@ function setPosition(){
     //set dx,dy,x_end_position, y_end_position to null arrays
     dx=[],dy=[],x_end_position=[],y_end_position=[]
     traversed_distance = 0; //distance particles have traveled at each mini-time step
-    for (i=1;i<=(n_active_particles+n_inactive_particles);i++){
+    for (i=0;i<(n_inactive_particles+n_active_particles);i++){
+
         angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
         x_distance =  Math.cos(angle)*distance //determine the x-coordinate distance of that direction
         y_distance = Math.sin(angle)*distance //determine the y-coordinate distancee of that direction
@@ -106,17 +108,24 @@ function setPosition(){
 
     function miniStep(){
         if (traversed_distance<=distance){
-            for (i=1;i<=(n_inactive_particles+n_active_particles);i++){ 
+            for (i=0;i<(n_inactive_particles+n_active_particles);i++){ 
                 //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
-                //point, then based on activity-strenght they interact.            
-                dot_i = document.getElementById("dot"+i);
+                //point, then based on activity-strenght they interact.  
+                if (i<n_inactive_particles){
+                    index=indices["inactive"][i];
+                    dot_index = document.getElementById("dot-inactive"+index);
+
+                }else{
+                    index=indices["active"][i-n_inactive_particles];
+                    dot_index = document.getElementById("dot-active"+index);
+                }
+                
                 try{
-                    compStyle = window.getComputedStyle(dot_i);
+                    compStyle = window.getComputedStyle(dot_index);
 
                 }catch(err){
                     console.log("error found")
                 }
-                compStyle = window.getComputedStyle(dot_i);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");
 
@@ -148,8 +157,8 @@ function setPosition(){
                     y_end_position[i] = Number(topValue) + dy[i];
                 }
 
-                dot_i.style.top = y_end_position[i] + "px";
-                dot_i.style.left = x_end_position[i] + "px"; 
+                dot_index.style.top = y_end_position[i] + "px";
+                dot_index.style.left = x_end_position[i] + "px"; 
                 //if condition then flag that circle as active (red)                 
             }
             traversed_distance +=distance/n_distance_interval;
