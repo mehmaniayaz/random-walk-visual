@@ -28,8 +28,6 @@ var compStyle=[],
     elapsedTime=0,
     active=false,
     activity_strength,
-    inactive_indices=[],
-    active_indices=[],
     indices = {"inactive":[],"active":[]}
 
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
@@ -66,7 +64,7 @@ function setPosition(){
         indices = addDot((n_inactive_previous+n_active_previous),n_inactive_particles - n_inactive_previous,active=false,indices)
     }
     if (n_inactive_particles<n_inactive_previous){
-        removeDot((n_inactive_previous+n_active_particles),n_inactive_previous-n_inactive_particles,active=false)
+        indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=false,indices)
     }
 
     //decide whether to add or remove active particles from HTML
@@ -75,7 +73,7 @@ function setPosition(){
         indices = addDot((n_active_previous+n_inactive_particles),n_active_particles - n_active_previous,active=true,indices)
     }
     if (n_active_particles<n_active_previous){
-        removeDot(n_active_previous,n_active_previous-n_active_particles,active=true)
+        indices = removeDot(n_active_previous,n_active_previous-n_active_particles,active=true,indices)
     }
 
     //set dx,dy,x_end_position, y_end_position to null arrays
@@ -112,6 +110,12 @@ function setPosition(){
                 //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
                 //point, then based on activity-strenght they interact.            
                 dot_i = document.getElementById("dot"+i);
+                try{
+                    compStyle = window.getComputedStyle(dot_i);
+
+                }catch(err){
+                    console.log("error found")
+                }
                 compStyle = window.getComputedStyle(dot_i);
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");

@@ -47,15 +47,35 @@ function addDot(n_total_previous,dn,status,indices){//function parameter list to
 }
 /**
  * 
- * @param {*} n_previous Number of previous-step's dots
- * @param {*} dn Number of dots to be subtracted.
+ * @param {integer} n_previous Number of previous-step's dots
+ * @param {integer} dn Number of dots to be subtracted.
+ * @param {boolean} status Status of the particles (active versus inactive)
+ * @param {dictionary} indices Dictinary that lists the active and inactive arrays for two keys ["inactive","active"]
+ * "]
  */
-function removeDot(n_previous,dn,status){
+function removeDot(n_previous,dn,status,indices){
     //currently dots are removed last added, last removed. TODO: remove dots randomly
-    for (i=n_previous;i>(n_previous-dn);i--){
-        element = document.getElementById("dot"+i);
-        element.remove();
+    if (status){
+        for (i=n_previous;i>(n_previous-dn);i--){
+            element = document.getElementById("dot"+indices["active"][i-1]);//we are using "i-1" since dot-indices start with 1
+            element.remove();
+            indices["active"].pop()
+        }
+    }else{
+        for (i=n_previous;i>(n_previous-dn);i--){
+            element = document.getElementById("dot"+indices["inactive"][i-1]);
+            try{
+                element.remove();
+            }catch(err){
+                console.log("error-caught")
+
+            }
+            
+            indices["inactive"].pop()
+        }
+
     }
+    return indices;
 }
 
 
