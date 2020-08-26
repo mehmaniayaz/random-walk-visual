@@ -15,7 +15,6 @@ var compStyle=[],
     angle=0,
     dot_i=[],
     distance = 10,
-    red ='rgb(255,0,0)',
     n_distance_interval = 10,
     x_distance=0,
     y_distance=0,
@@ -26,10 +25,15 @@ var compStyle=[],
     n_inactive_particles=0,
     n_active_particles=0,
     n_active_previous=0,
-    elapsedTime=0
+    elapsedTime=0,
+    active=false,
+    activity_strength,
+    inactive_indices=[],
+    active_indices=[],
+    indices = {"inactive":[],"active":[]}
 
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
-addDot(0,n_inactive_particles,active=0)
+indices= addDot(0,n_inactive_particles,active=false,indices)
 
 
 //obtain the coordinates of the bounding box for particles to remain within
@@ -48,33 +52,35 @@ function setPosition(){
     distance = Number(document.getElementById("id-particle-distance").value);
 
     //acquire information about inactive particles
-    n_previous = n_particles;
-    n_particles = Number(document.getElementById("id-particle-number").value);
+    n_inactive_previous = n_inactive_particles;
+    n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
 
     //acquire information about active particles
-    n_inactive_previous = n_active_particles;
+    n_active_previous = n_active_particles;
     n_active_particles = Number(document.getElementById("id-active-particle-number").value);
     activity_strength = Number(document.getElementById("id-activity-strength").value);
 
     //decide whether to add or remove inactive from HTML
     if (n_inactive_particles>n_inactive_previous){
-        addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=0)
+        //can we shorten this invocation?
+        indices = addDot((n_inactive_previous+n_active_previous),n_inactive_particles - n_inactive_previous,active=false,indices)
     }
     if (n_inactive_particles<n_inactive_previous){
-        removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=0)
+        removeDot((n_inactive_previous+n_active_particles),n_inactive_previous-n_inactive_particles,active=false)
     }
 
     //decide whether to add or remove active particles from HTML
     if (n_active_particles>n_active_previous){
-        addDot(n_active_previous,n_active_particles - n_active_previous,active=1)
+        //can we shorten this invocation?
+        indices = addDot((n_active_previous+n_inactive_particles),n_active_particles - n_active_previous,active=true,indices)
     }
     if (n_active_particles<n_active_previous){
-        removeDot(n_active_previous,n_active_previous-n_active_particles,active=1)
+        removeDot(n_active_previous,n_active_previous-n_active_particles,active=true)
     }
 
     //set dx,dy,x_end_position, y_end_position to null arrays
     dx=[],dy=[],x_end_position=[],y_end_position=[]
-    travesered_distance = 0; //distance particles have traveled at each mini-time step
+    traversed_distance = 0; //distance particles have traveled at each mini-time step
     for (i=1;i<=(n_active_particles+n_inactive_particles);i++){
         angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
         x_distance =  Math.cos(angle)*distance //determine the x-coordinate distance of that direction
@@ -102,7 +108,7 @@ function setPosition(){
 
     function miniStep(){
         if (traversed_distance<=distance){
-            for (i=1;i<=n_particles;i++){ 
+            for (i=1;i<=(n_inactive_particles+n_active_particles);i++){ 
                 //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
                 //point, then based on activity-strenght they interact.            
                 dot_i = document.getElementById("dot"+i);
