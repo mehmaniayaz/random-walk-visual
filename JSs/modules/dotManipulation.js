@@ -21,6 +21,22 @@ export {addDot,removeDot}
  * @param {boolean} status true of dot is active, false if inactive
  */
 function addDot(n_previous,dn,status,indices){//function parameter list too long - shorten it
+    let i_start_active,i_start_inactive
+    if (indices["active"].length>0){
+        i_start_active = indices["active"].reduce(function(a,b){
+            return Math.max(a,b)
+        }) + 1;
+    }else{
+        i_start_active=0
+    }
+    if (indices["inactive"].length>0){
+        i_start_inactive = indices["inactive"].reduce(function(a,b){
+            return Math.max(a,b)
+        }) + 1;
+    }else{
+        i_start_inactive=0
+    }
+
     for (i=n_previous+1;i<=(n_previous + dn);i++){
         angle = Math.random()*2*Math.PI;
         x_position = x_bounding_left + Math.ceil((x_bounding_right-x_bounding_left)/2);
@@ -28,12 +44,15 @@ function addDot(n_previous,dn,status,indices){//function parameter list too long
         x = document.createElement('div');
         if (status){
             x.style.backgroundColor="darkred"
-            indices["active"].push(i)
-            x.setAttribute("id","dot-active" + i)
+            indices["active"].push(i_start_active+i)
+            x.setAttribute("id","dot-active" + (i_start_active+i))
         }else{
             x.style.backgroundColor = 'darkgreen';
-            indices["inactive"].push(i) 
-            x.setAttribute("id","dot-inactive" + i)
+            if (Number.isNaN(i_start_inactive+i)){
+                console.log("NaN found")
+            }
+            indices["inactive"].push(i_start_inactive+i) 
+            x.setAttribute("id","dot-inactive" + (i_start_inactive+i))
         }
 
         x.style.width = '25px';

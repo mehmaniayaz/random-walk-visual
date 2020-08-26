@@ -29,7 +29,16 @@ var compStyle=[],
     activity_strength,
     indices = {"inactive":[],"active":[]},
     index,
-    dot_index
+    dot_index,
+    active_index,
+    dot_active_index,
+    topValue_active,
+    leftValue_active,
+    inactive_index,
+    dot_inactive_index,
+    topValue_inactive,
+    leftValue_inactive,
+    new_active_index
 
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
 indices= addDot(0,n_inactive_particles,active=false,indices)
@@ -122,10 +131,15 @@ function setPosition(){
                     dot_index = document.getElementById("dot-active"+index);
                 }
 
-                compStyle = window.getComputedStyle(dot_index);
+                try{
+                    compStyle = window.getComputedStyle(dot_index);
+                }catch(err){
+                    console.log("error captured")
+                }
+                
                 topValue = compStyle.getPropertyValue("top").replace("px", "");
                 leftValue = compStyle.getPropertyValue("left").replace("px","");
-
+                //TODO: refactor the bottom
                 within_boundary = true
                 if ((Number(leftValue) + dx[i])>x_bounding_right){
                     within_boundary = false
@@ -155,22 +169,42 @@ function setPosition(){
                 }
 
                 dot_index.style.top = y_end_position[i] + "px";
-                dot_index.style.left = x_end_position[i] + "px"; 
-                //if condition then flag that circle as active (red)                 
+                dot_index.style.left = x_end_position[i] + "px";                  
+            }
+            //if condition then flag that circle as active (red) - refactor below
+            for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
+                active_index = indices["active"][i_active_index]
+                dot_active_index = document.getElementById("dot-active"+active_index);
+                try{
+                    compStyle = window.getComputedStyle(dot_active_index);
+                }catch(err){
+                    console.log("error-found")
+                }
+                
+                topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
+                leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
+                for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
+                    inactive_index = indices["inactive"][i_inactive_index]
+                    dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
+                    compStyle = window.getComputedStyle(dot_inactive_index);
+                    topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
+                    leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
+                    if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
+                        new_active_index = indices["active"].length+1
+                        document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
+                        document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                        indices["inactive"].splice(i_inactive_index)
+                        indices["active"].push(new_active_index)
+                        n_active_particles+=1
+                        n_inactive_particles-=1
+                    }                    
+                }
             }
             traversed_distance +=distance/n_distance_interval;
             setTimeout(miniStep,step_delay_time)
         }
     }
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
-}
-
-
-function randomColor() { 
-    r1 = Math.floor(Math.random() * 255) 
-    r2 = Math.floor(Math.random() * 255) 
-    r3 = Math.floor(Math.random() * 255) 
-    return 'rgb(' + r1 + "," + r2 + "," + r3 + ')';
 }
 
 setPosition()
