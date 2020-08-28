@@ -11,7 +11,7 @@ This project is currently under development. Stay tuned for additional features 
 3) Run http-server in terminal (http-server)
 ```
 
-<img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/reactive_demo.gif" width="400" />
+<img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/reactive_demo.gif" width="600" />
 
 ### Contribute
 Contributions are welcome! Feel free to pull request - for considerable changes, please open an issue. 
