@@ -40,10 +40,6 @@ var compStyle=[],
     leftValue_inactive,
     new_active_index
 
-n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
-indices= addDot(0,n_inactive_particles,active=false,indices)
-
-
 //obtain the coordinates of the bounding box for particles to remain within
 let elem = document.getElementById("box-container"),
     coords = elem.getBoundingClientRect(),
@@ -52,7 +48,13 @@ let elem = document.getElementById("box-container"),
     y_bounding_top = coords['top'],
     y_bounding_bottom = coords['bottom']
 
+n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
+indices= addDot(0,n_inactive_particles,active=false,indices)    
+
+//plot the skeleton of scatterplot
 scatterPlot()
+
+
 function setPosition(){
     scatterPlot(elapsedTime,n_active_particles)
     elapsedTime +=1
@@ -68,24 +70,11 @@ function setPosition(){
     dx=[],dy=[],x_end_position=[],y_end_position=[]
     traversed_distance = 0; //distance particles have traveled at each mini-time step
     for (i=0;i<(n_inactive_particles+n_active_particles);i++){
-
         angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
         x_distance =  Math.cos(angle)*distance //determine the x-coordinate distance of that direction
         y_distance = Math.sin(angle)*distance //determine the y-coordinate distancee of that direction
-
         //this section is to avoid directional bias for the random walkers
-        rand_ceil_or_floor_x = -0.5 + Math.random()
-        rand_ceil_or_floor_y = -0.5 + Math.random()
-        if (rand_ceil_or_floor_x<0){
-            dx[i] = Math.floor(x_distance/n_distance_interval)
-        }else{
-            dx[i] = Math.ceil(x_distance/n_distance_interval)
-        }
-        if (rand_ceil_or_floor_y<0){
-            dy[i] = Math.floor(y_distance/n_distance_interval)
-        }else{
-            dy[i] = Math.ceil(y_distance/n_distance_interval)
-        }
+        dx,dy = distanceBreakdown(x_distance,y_distance,n_distance_interval);
     }
     miniStep()
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
@@ -103,6 +92,27 @@ function ETL(){
     n_active_particles = Number(document.getElementById("id-active-particle-number").value);
     activity_strength = Number(document.getElementById("id-activity-strength").value);
     return step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength
+}
+/**
+ * Breakdown total distance intervals without imposing directional bias
+ * @param {*} x_distance Total distance traversed in the x-direction
+ * @param {*} y_distance Total distance traversed in the y-direction
+ * @param {*} n_distance_interval Breakdown intervals of the distances
+ */
+function distanceBreakdown(x_distance,y_distance,n_distance_interval){
+    rand_ceil_or_floor_x = -0.5 + Math.random()
+    rand_ceil_or_floor_y = -0.5 + Math.random()
+    if (rand_ceil_or_floor_x<0){
+        dx[i] = Math.floor(x_distance/n_distance_interval)
+    }else{
+        dx[i] = Math.ceil(x_distance/n_distance_interval)
+    }
+    if (rand_ceil_or_floor_y<0){
+        dy[i] = Math.floor(y_distance/n_distance_interval)
+    }else{
+        dy[i] = Math.ceil(y_distance/n_distance_interval)
+    }
+    return dx, dy
 }
 
 /**
@@ -186,32 +196,37 @@ function miniStep(){
             dot_index.style.top = y_end_position[i] + "px";
             dot_index.style.left = x_end_position[i] + "px";                  
         }
-        //if condition then flag that circle as active (red) - refactor below
-        for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
-            active_index = indices["active"][i_active_index]
-            dot_active_index = document.getElementById("dot-active"+active_index);
-            compStyle = window.getComputedStyle(dot_active_index);
-            
-            topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
-            leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
-            for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
-                inactive_index = indices["inactive"][i_inactive_index]
-                dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
-                compStyle = window.getComputedStyle(dot_inactive_index);
-                topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
-                leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
-                if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
-                    new_active_index = indices["active"].length+1
-                    document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
-                    document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
-                    indices["inactive"].splice(i_inactive_index,1)
-                    indices["active"].push(new_active_index)
-                    n_active_particles+=1
-                    n_inactive_particles-=1
-                }                    
-            }
-        }
+
+        [indices,n_active_particles,n_inactive_particles] = interactionCheck(indices,n_active_particles,n_inactive_particles);
+    
         traversed_distance +=distance/n_distance_interval;
         setTimeout(miniStep,step_delay_time)
     }
+}
+function interactionCheck(indices,n_active_particles,n_inactive_particles){
+    //if condition then flag that circle as active (red) - refactor below
+    for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
+        active_index = indices["active"][i_active_index];
+        dot_active_index = document.getElementById("dot-active"+active_index);
+        compStyle = window.getComputedStyle(dot_active_index);
+        topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
+        leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
+        for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
+            inactive_index = indices["inactive"][i_inactive_index]
+            dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
+            compStyle = window.getComputedStyle(dot_inactive_index);
+            topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
+            leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
+            if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
+                new_active_index = indices["active"].length+1
+                document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
+                document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                indices["inactive"].splice(i_inactive_index,1)
+                indices["active"].push(new_active_index)
+                n_active_particles+=1
+                n_inactive_particles-=1
+            }                    
+        }
+    }
+    return [indices, n_active_particles,n_inactive_particles]
 }
