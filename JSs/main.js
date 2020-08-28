@@ -1,4 +1,4 @@
-import {addDot,addOrRemove} from "./modules/dotManipulation.js"
+import {addDot,addOrRemove,distanceBreakdown,ETL} from "./modules/dotManipulation.js"
 import {scatterPlot} from "./modules/visuals.js"
 var compStyle=[],
     topValue=[],
@@ -18,8 +18,6 @@ var compStyle=[],
     x_distance=0,
     y_distance=0,
     within_boundary=false,
-    rand_ceil_or_floor_x=0,
-    rand_ceil_or_floor_y=0,
     n_inactive_previous=0,
     n_inactive_particles=0,
     n_active_particles=0,
@@ -62,7 +60,7 @@ function setPosition(){
     n_inactive_previous = n_inactive_particles;
     n_active_previous = n_active_particles;
 
-    step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength=ETL();
+    [step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength]=ETL();
 
     indices = addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
 
@@ -71,50 +69,16 @@ function setPosition(){
     traversed_distance = 0; //distance particles have traveled at each mini-time step
     for (i=0;i<(n_inactive_particles+n_active_particles);i++){
         angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
-        x_distance =  Math.cos(angle)*distance //determine the x-coordinate distance of that direction
-        y_distance = Math.sin(angle)*distance //determine the y-coordinate distancee of that direction
+        x_distance =  Math.cos(angle)*distance; //determine the x-coordinate distance of that direction
+        y_distance = Math.sin(angle)*distance; //determine the y-coordinate distancee of that direction
         //this section is to avoid directional bias for the random walkers
-        dx,dy = distanceBreakdown(x_distance,y_distance,n_distance_interval);
+        [dx[i],dy[i]] = distanceBreakdown(x_distance,y_distance,n_distance_interval);
     }
     miniStep()
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
 }
 
 setPosition()
-
-/**
- * gather information from fieldset 
- */
-function ETL(){
-    step_delay_time = Number(document.getElementById("id-particle-speed").value);
-    distance = Number(document.getElementById("id-particle-distance").value);
-    n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
-    n_active_particles = Number(document.getElementById("id-active-particle-number").value);
-    activity_strength = Number(document.getElementById("id-activity-strength").value);
-    return step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength
-}
-/**
- * Breakdown total distance intervals without imposing directional bias
- * @param {*} x_distance Total distance traversed in the x-direction
- * @param {*} y_distance Total distance traversed in the y-direction
- * @param {*} n_distance_interval Breakdown intervals of the distances
- */
-function distanceBreakdown(x_distance,y_distance,n_distance_interval){
-    rand_ceil_or_floor_x = -0.5 + Math.random()
-    rand_ceil_or_floor_y = -0.5 + Math.random()
-    if (rand_ceil_or_floor_x<0){
-        dx[i] = Math.floor(x_distance/n_distance_interval)
-    }else{
-        dx[i] = Math.ceil(x_distance/n_distance_interval)
-    }
-    if (rand_ceil_or_floor_y<0){
-        dy[i] = Math.floor(y_distance/n_distance_interval)
-    }else{
-        dy[i] = Math.ceil(y_distance/n_distance_interval)
-    }
-    return dx, dy
-}
-
 
 
 /**

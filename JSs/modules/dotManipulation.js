@@ -12,7 +12,7 @@ let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
-export {addDot,removeDot,addOrRemove}
+export {addDot,addOrRemove,distanceBreakdown,ETL}
 
 /**
  * 
@@ -121,4 +121,42 @@ function addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_p
         indices = removeDot(n_active_previous,n_active_previous-n_active_particles,true,indices)
     }
     return indices
+}
+
+/**
+ * Breakdown total distance intervals without imposing directional bias
+ * @param {*} x_distance Total distance traversed in the x-direction
+ * @param {*} y_distance Total distance traversed in the y-direction
+ * @param {*} n_distance_interval Breakdown intervals of the distances
+ */
+function distanceBreakdown(x_distance,y_distance,n_distance_interval){
+    let rand_ceil_or_floor_x=0,
+    rand_ceil_or_floor_y=0,
+    dx_i=0,
+    dy_i=0
+    rand_ceil_or_floor_x = -0.5 + Math.random()
+    rand_ceil_or_floor_y = -0.5 + Math.random()
+    if (rand_ceil_or_floor_x<0){
+        dx_i = Math.floor(x_distance/n_distance_interval)
+    }else{
+        dx_i = Math.ceil(x_distance/n_distance_interval)
+    }
+    if (rand_ceil_or_floor_y<0){
+        dy_i = Math.floor(y_distance/n_distance_interval)
+    }else{
+        dy_i = Math.ceil(y_distance/n_distance_interval)
+    }
+    return [dx_i, dy_i]
+}
+
+/**
+ * gather information from fieldset 
+ */
+function ETL(){
+    let step_delay_time = Number(document.getElementById("id-particle-speed").value);
+    let distance = Number(document.getElementById("id-particle-distance").value);
+    let n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
+    let n_active_particles = Number(document.getElementById("id-active-particle-number").value);
+    let activity_strength = Number(document.getElementById("id-activity-strength").value);
+    return [step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength];
 }
