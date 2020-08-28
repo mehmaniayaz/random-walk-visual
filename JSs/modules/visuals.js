@@ -25,7 +25,7 @@ svg.append("g")
 
 // Add Y axis
 var y = d3.scaleLinear()
-    .domain([0, 1000])
+    .domain([0, 100])
     .range([ height, 0]);
 svg.append("g")
     .call(d3.axisLeft(y));
@@ -36,7 +36,7 @@ svg.append("text")
     .attr("text-anchor","end")
     .attr("x",width)
     .attr("y",height-6)
-    .text("time elapsed (ms)")
+    .text("time elapsed (unit)")
 
 //Add Y-axis label
 svg.append("text")
@@ -45,7 +45,7 @@ svg.append("text")
     .attr("y",6)
     .attr("dy","0.75em")
     .attr("transform","rotate(-90)")
-    .text("interacted particles")
+    .text("active particles")
 /**
  * 
  * @param {integer} new_time additional (elapsed time) of particle
