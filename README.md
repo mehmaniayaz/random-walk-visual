@@ -10,6 +10,7 @@ This project is currently under development. Stay tuned for additional features 
 2) Install http-server (npm install -g http-server)
 3) Run http-server in terminal (http-server)
 ```
+The attached demo shows how active particles activate inactive particles during Brownian motion. The interaction strength can be set by the user and the number of active particles is visualized in a scatter plot. This demonstration can serve as an analogue for disease spread amongst occupants of a room. 
 
 <img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/reactive_demo.gif" width="600" />
 
