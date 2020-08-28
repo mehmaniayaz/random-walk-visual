@@ -1,136 +1,98 @@
-import {addDot,removeDot} from "./modules/dotManipulation.js"
+import {addDot,addOrRemove,distanceBreakdown,ETL,interactionCheck,boundaryCorrection} from "./modules/dotManipulation.js"
+import {scatterPlot} from "./modules/visuals.js"
 var compStyle=[],
     topValue=[],
     leftValue=[],
     i=[],
-    n_previous=0,
     distance = [], //distance in pixel that the dot travels at each time step
     step_delay_time = 10,//ms
     dx=[],
     dy=[],
-    end_distance=[],
-    x_end_distance=[],
-    y_end_distance=[],
+    traversed_distance=[],
+    x_end_position=[],
+    y_end_position=[],
     angle=0,
-    dot_i=[],
     distance = 10,
-    purple ='rgb(128,0,128)',
-    n_distance_interval = 10
+    n_distance_interval = 10,
+    x_distance=0,
+    y_distance=0,
+    within_boundary=false,
+    n_inactive_previous=0,
+    n_inactive_particles=0,
+    n_active_particles=0,
+    n_active_previous=0,
+    elapsedTime=0,
+    active=false,
+    indices = {"inactive":[],"active":[]},
+    index,
+    dot_index,
+    strength_rand
+n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
+indices= addDot(0,n_inactive_particles,active=false,indices)    
 
-var n_particles = Number(document.getElementById("id-particle-number").value);
-
-addDot(0,n_particles)
-
-//obtain the coordinates of the bounding box for particles to remain within
-let elem = document.getElementById("box-container")
-let coords = elem.getBoundingClientRect()
-let x_bounding_left = coords['left']
-let x_bounding_right = coords['right']
-let y_bounding_top = coords['top']
-let y_bounding_bottom = coords['bottom']
-
-
-var x_distance=0, y_distance=0
-var within_boundary=false
-var rand_ceil_or_floor_x=0
-var rand_ceil_or_floor_y=0
+//plot the skeleton of scatterplot
+scatterPlot()
 
 
 function setPosition(){
-    distance = Number(document.getElementById("id-particle-distance").value);
-    step_delay_time = Number(document.getElementById("id-particle-speed").value);
-    n_previous = n_particles;
-    n_particles = Number(document.getElementById("id-particle-number").value);
-    //INPUT NUMBER OF PARTICLES 
-    //IF NUMBER OF PARTICLES ARE DIFFERENT THAN CURRENT NUMBER THEN 
-    //(1) IF NUMBER OF NEW PARTICLES IS BIGGER THAN CURRENT NUMBER THEN
-    //ADD MORE PARTICLES WITHOUT CHANGING THE CURRENT OBJECTS TREJECTORY
-    //(2) IF THE NUMBER OF PARTICLES IS SMALLER THAN CURRENT ONES THEN RANDOMLY
-    //REMOVE SOME OF THEM BUT DO NOT AFFECT THE REMAINING ONES' TREJECTORY
-    if (n_particles>n_previous){
-        addDot(n_previous,n_particles - n_previous)
+    scatterPlot(elapsedTime,n_active_particles)
+    elapsedTime +=1
+    //record number of active versus inactive particles from previous step
+    n_inactive_previous = n_inactive_particles;
+    n_active_previous = n_active_particles;
+
+    [step_delay_time,distance,n_inactive_particles,n_active_particles]=ETL();
+
+    indices = addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
+
+    //set dx,dy,x_end_position, y_end_position to null arrays
+    dx=[],dy=[],x_end_position=[],y_end_position=[]
+    traversed_distance = 0; //distance particles have traveled at each mini-time step
+    for (i=0;i<(n_inactive_particles+n_active_particles);i++){
+        strength_rand = Math.random()*100
+        angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
+        x_distance =  Math.cos(angle)*distance; //determine the x-coordinate distance of that direction
+        y_distance = Math.sin(angle)*distance; //determine the y-coordinate distancee of that direction
+        //this section is to avoid directional bias for the random walkers
+        [dx[i],dy[i]] = distanceBreakdown(x_distance,y_distance,n_distance_interval);
     }
-    if (n_particles<n_previous){
-        removeDot(n_previous,n_previous-n_particles)
-    }
-    dx=[],dy=[],x_end_distance=[],y_end_distance=[]
-    end_distance = 0;
-    for (i=1;i<=n_particles;i++){
-        angle = Math.random()*2*Math.PI;
-
-        x_distance =  Math.cos(angle)*distance
-        y_distance = Math.sin(angle)*distance
-
-        rand_ceil_or_floor_x = -0.5 + Math.random()
-        rand_ceil_or_floor_y = -0.5 + Math.random()
-
-        //this is to avoid directional bias for the random walkers
-        if (rand_ceil_or_floor_x<0){
-            dx[i] = Math.floor(x_distance/n_distance_interval)
-        }else{
-            dx[i] = Math.ceil(x_distance/n_distance_interval)
-        }
-        if (rand_ceil_or_floor_y<0){
-            dy[i] = Math.floor(y_distance/n_distance_interval)
-        }else{
-            dy[i] = Math.ceil(y_distance/n_distance_interval)
-        }
-    }
-
     miniStep()
-
-    function miniStep(){
-        if (end_distance<=distance){
-            for (i=1;i<=n_particles;i++){            
-                dot_i = document.getElementById("dot"+i);
-                compStyle = window.getComputedStyle(dot_i);
-                topValue = compStyle.getPropertyValue("top").replace("px", "");
-                leftValue = compStyle.getPropertyValue("left").replace("px","");
-
-                within_boundary = true
-                if ((Number(leftValue) + dx[i])>x_bounding_right){
-                    within_boundary = false
-                    x_end_distance[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
-                    dx[i] = -dx[i]
-
-                } else if ((Number(leftValue) + dx[i])<x_bounding_left){
-                    within_boundary = false
-                    x_end_distance[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
-                    dx[i] = -dx[i]
-                }
-
-                if ((Number(topValue) + dy[i])<y_bounding_top){
-                    within_boundary = false
-                    y_end_distance[i] = y_bounding_top +  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
-                    dy[i]=-dy[i]
-
-                } else if ((Number(topValue) + dy[i])>y_bounding_bottom){
-                    within_boundary = false
-                    y_end_distance[i] = y_bounding_bottom - Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
-                    dy[i]=-dy[i]
-                }
-
-                if (within_boundary){
-                    x_end_distance[i] = Number(leftValue) + dx[i];
-                    y_end_distance[i] = Number(topValue) + dy[i];
-                }
-
-                dot_i.style.top = y_end_distance[i] + "px";
-                dot_i.style.left = x_end_distance[i] + "px";                  
-            }
-            end_distance +=distance/n_distance_interval;
-            setTimeout(miniStep,step_delay_time)
-        }
-    }
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
 }
 
-
-function randomColor() { 
-    r1 = Math.floor(Math.random() * 255) 
-    r2 = Math.floor(Math.random() * 255) 
-    r3 = Math.floor(Math.random() * 255) 
-    return 'rgb(' + r1 + "," + r2 + "," + r3 + ')';
-}
-
 setPosition()
+
+
+/**
+ * Create a smoother traverse of particles by breaking down the mini-steps with each time step
+ * by breaking down the distance with n_distance_interval
+ */
+function miniStep(){
+    if (traversed_distance<=distance){
+        for (i=0;i<(n_inactive_particles+n_active_particles);i++){             
+            //first go through inactive particles and then active particles
+            if (i<n_inactive_particles){
+                index=indices["inactive"][i];
+                dot_index = document.getElementById("dot-inactive"+index);
+
+            }else{
+                index=indices["active"][i-n_inactive_particles];
+                dot_index = document.getElementById("dot-active"+index);
+            }
+            compStyle = window.getComputedStyle(dot_index);
+            
+            topValue = compStyle.getPropertyValue("top").replace("px", "");
+            leftValue = compStyle.getPropertyValue("left").replace("px","");
+
+            [x_end_position[i],y_end_position[i],dx[i],dy[i]] = boundaryCorrection(topValue,leftValue,dx[i],dy[i])
+
+            dot_index.style.top = y_end_position[i] + "px";
+            dot_index.style.left = x_end_position[i] + "px";                  
+        }
+
+        [indices,n_active_particles,n_inactive_particles] = interactionCheck(indices,n_active_particles,n_inactive_particles,strength_rand);
+    
+        traversed_distance +=distance/n_distance_interval;
+        setTimeout(miniStep,step_delay_time)
+    }
+}

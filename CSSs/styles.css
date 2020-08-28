@@ -35,7 +35,6 @@ input {
 
 #box-container{
     float: left;
-    /* background-color:white; */
     min-width: 20%;
     margin-left: 2%;
     width: 800px;
@@ -47,13 +46,19 @@ input {
 
 }
 
-#id-particle-number {
+#id-inactive-particle-number {
     margin-bottom: 50px;
 }
 #id-particle-distance {
     margin-bottom: 50px;
 }
 #id-particle-speed {
+    margin-bottom: 50px;
+}
+#id-active-particle-number{
+    margin-bottom: 50px;
+}
+#id-activity-strength{
     margin-bottom: 50px;
 }
 
@@ -71,10 +76,20 @@ p {
     color: rgb(6, 1, 1);
 }
 
-#dot {
+#dot-inactive {
     height: 25px;
     width: 25px;
-    background-color: gray;
+    background-color:darkgreen;
+    border-radius: 50%;
+    position: absolute;
+    top: 500px;
+    left: 400px;
+}
+
+#dot-active {
+    height: 25px;
+    width: 25px;
+    background-color:darkgreen;
     border-radius: 50%;
     position: absolute;
     top: 500px;
