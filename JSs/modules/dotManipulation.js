@@ -12,7 +12,7 @@ let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
-export {addDot,addOrRemove,distanceBreakdown,ETL}
+export {addDot,addOrRemove,distanceBreakdown,ETL,interactionCheck,boundaryCorrection}
 
 /**
  * 
@@ -159,4 +159,66 @@ function ETL(){
     let n_active_particles = Number(document.getElementById("id-active-particle-number").value);
     let activity_strength = Number(document.getElementById("id-activity-strength").value);
     return [step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength];
+}
+
+/**
+ * determine whether an active particle activates an inactive particle
+ * @param {Dictionary that contains index list of activer and inactive partilces} indices Dictionary for list of indices for active and inactive particles
+ * @param {Integer} n_active_particles Number of current active particles
+ * @param {Integer} n_inactive_particles Number of current inactive particles
+ */
+function interactionCheck(indices,n_active_particles,n_inactive_particles){
+    //if condition then flag that circle as active (red) - refactor below
+    for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
+        let active_index = indices["active"][i_active_index];
+        let dot_active_index = document.getElementById("dot-active"+active_index);
+        let compStyle = window.getComputedStyle(dot_active_index);
+        let topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
+        let leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
+        for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
+            let inactive_index = indices["inactive"][i_inactive_index]
+            let dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
+            compStyle = window.getComputedStyle(dot_inactive_index);
+            let topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
+            let leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
+            if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
+                let new_active_index = indices["active"].length+1
+                document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
+                document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                indices["inactive"].splice(i_inactive_index,1)
+                indices["active"].push(new_active_index)
+                n_active_particles+=1
+                n_inactive_particles-=1
+            }                    
+        }
+    }
+    return [indices, n_active_particles,n_inactive_particles]
+}
+
+function boundaryCorrection(topValue,leftValue,dx_i,dy_i){
+    let within_boundary = true
+    let x_end_position_i,y_end_position_i
+    if ((Number(leftValue) + dx_i)>x_bounding_right){
+        within_boundary = false
+        x_end_position_i = x_bounding_right - Math.abs(Number(leftValue)+dx_i-x_bounding_right);
+        dx_i = -dx_i
+    } else if ((Number(leftValue) + dx_i)<x_bounding_left){
+        within_boundary = false
+        x_end_position_i = x_bounding_left + Math.abs(Number(leftValue)+dx_i-x_bounding_left);
+        dx_i = -dx_i
+    }
+    if ((Number(topValue) + dy_i)<y_bounding_top){
+        within_boundary = false
+        y_end_position_i = y_bounding_top +  Math.abs(Number(topValue)+dy_i-y_bounding_top);
+        dy_i=-dy_i
+    } else if ((Number(topValue) + dy_i)>y_bounding_bottom){
+        within_boundary = false
+        y_end_position_i = y_bounding_bottom - Math.abs(Number(topValue)+dy_i-y_bounding_bottom);
+        dy_i=-dy_i
+    }
+    if (within_boundary){
+        x_end_position_i = Number(leftValue) + dx_i;
+        y_end_position_i = Number(topValue) + dy_i;
+    }
+    return [x_end_position_i,y_end_position_i,dx_i,dy_i]
 }
