@@ -56,35 +56,13 @@ scatterPlot()
 function setPosition(){
     scatterPlot(elapsedTime,n_active_particles)
     elapsedTime +=1
-    step_delay_time = Number(document.getElementById("id-particle-speed").value);
-    distance = Number(document.getElementById("id-particle-distance").value);
-
-    //acquire information about inactive particles
+    //record number of active versus inactive particles from previous step
     n_inactive_previous = n_inactive_particles;
-    n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
-
-    //acquire information about active particles
     n_active_previous = n_active_particles;
-    n_active_particles = Number(document.getElementById("id-active-particle-number").value);
-    activity_strength = Number(document.getElementById("id-activity-strength").value);
 
-    //decide whether to add or remove inactive from HTML
-    if (n_inactive_particles>n_inactive_previous){
-        //can we shorten this invocation?
-        indices = addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=false,indices)
-    }
-    if (n_inactive_particles<n_inactive_previous){
-        indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=false,indices)
-    }
+    step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength=ETL();
 
-    //decide whether to add or remove active particles from HTML
-    if (n_active_particles>n_active_previous){
-        //can we shorten this invocation?
-        indices = addDot(n_active_previous,n_active_particles - n_active_previous,active=true,indices)
-    }
-    if (n_active_particles<n_active_previous){
-        indices = removeDot(n_active_previous,n_active_previous-n_active_particles,active=true,indices)
-    }
+    indices = addOrRemove(n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
 
     //set dx,dy,x_end_position, y_end_position to null arrays
     dx=[],dy=[],x_end_position=[],y_end_position=[]
@@ -109,102 +87,131 @@ function setPosition(){
             dy[i] = Math.ceil(y_distance/n_distance_interval)
         }
     }
-    /*TODO: (1) determine the a dictionary of lines for each particle
-            (2) determine which line intersect which one
-            (3)activate inactive particles if they intersect path of active particles (based on activity strength - use default of 100%)*/
-
     miniStep()
-
-    function miniStep(){
-        if (traversed_distance<=distance){
-            for (i=0;i<(n_inactive_particles+n_active_particles);i++){ 
-                //let's put the condition for iteractivity here. If two dots are at close proximity to each other at any single
-                //point, then based on activity-strenght they interact. 
-                
-                //first go through inactive particles and then active particles
-                if (i<n_inactive_particles){
-                    index=indices["inactive"][i];
-                    dot_index = document.getElementById("dot-inactive"+index);
-
-                }else{
-                    index=indices["active"][i-n_inactive_particles];
-                    dot_index = document.getElementById("dot-active"+index);
-                }
-
-                try{
-                    compStyle = window.getComputedStyle(dot_index);
-                }catch(err){
-                    console.log("error captured")
-                }
-                
-                topValue = compStyle.getPropertyValue("top").replace("px", "");
-                leftValue = compStyle.getPropertyValue("left").replace("px","");
-                //TODO: refactor the bottom
-                within_boundary = true
-                if ((Number(leftValue) + dx[i])>x_bounding_right){
-                    within_boundary = false
-                    x_end_position[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
-                    dx[i] = -dx[i]
-
-                } else if ((Number(leftValue) + dx[i])<x_bounding_left){
-                    within_boundary = false
-                    x_end_position[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
-                    dx[i] = -dx[i]
-                }
-
-                if ((Number(topValue) + dy[i])<y_bounding_top){
-                    within_boundary = false
-                    y_end_position[i] = y_bounding_top +  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
-                    dy[i]=-dy[i]
-
-                } else if ((Number(topValue) + dy[i])>y_bounding_bottom){
-                    within_boundary = false
-                    y_end_position[i] = y_bounding_bottom - Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
-                    dy[i]=-dy[i]
-                }
-
-                if (within_boundary){
-                    x_end_position[i] = Number(leftValue) + dx[i];
-                    y_end_position[i] = Number(topValue) + dy[i];
-                }
-
-                dot_index.style.top = y_end_position[i] + "px";
-                dot_index.style.left = x_end_position[i] + "px";                  
-            }
-            //if condition then flag that circle as active (red) - refactor below
-            for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
-                active_index = indices["active"][i_active_index]
-                dot_active_index = document.getElementById("dot-active"+active_index);
-                try{
-                    compStyle = window.getComputedStyle(dot_active_index);
-                }catch(err){
-                    console.log("error-found")
-                }
-                
-                topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
-                leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
-                for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
-                    inactive_index = indices["inactive"][i_inactive_index]
-                    dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
-                    compStyle = window.getComputedStyle(dot_inactive_index);
-                    topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
-                    leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
-                    if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
-                        new_active_index = indices["active"].length+1
-                        document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
-                        document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
-                        indices["inactive"].splice(i_inactive_index,1)
-                        indices["active"].push(new_active_index)
-                        n_active_particles+=1
-                        n_inactive_particles-=1
-                    }                    
-                }
-            }
-            traversed_distance +=distance/n_distance_interval;
-            setTimeout(miniStep,step_delay_time)
-        }
-    }
     setTimeout(setPosition,step_delay_time*n_distance_interval*2)
 }
 
 setPosition()
+
+/**
+ * gather information from fieldset 
+ */
+function ETL(){
+    step_delay_time = Number(document.getElementById("id-particle-speed").value);
+    distance = Number(document.getElementById("id-particle-distance").value);
+    n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
+    n_active_particles = Number(document.getElementById("id-active-particle-number").value);
+    activity_strength = Number(document.getElementById("id-activity-strength").value);
+    return step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength
+}
+
+/**
+ * add or remove particles based on information from previous and current number of active
+ * and inactive particles
+ * @param {*} n_inactive_particles Number of inactive particles at the current step
+ * @param {*} n_inactive_previous Number of inactive particles at the previous step
+ * @param {*} n_active_particles Number of active particles at the current step
+ * @param {*} n_active_previous Number of active particles at the previous step
+ */
+function addOrRemove(n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous){
+    //decide whether to add or remove inactive from HTML
+    if (n_inactive_particles>n_inactive_previous){
+        //can we shorten this invocation?
+        indices = addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=false,indices)
+    }
+    if (n_inactive_particles<n_inactive_previous){
+        indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=false,indices)
+    }
+
+    //decide whether to add or remove active particles from HTML
+    if (n_active_particles>n_active_previous){
+        //can we shorten this invocation?
+        indices = addDot(n_active_previous,n_active_particles - n_active_previous,active=true,indices)
+    }
+    if (n_active_particles<n_active_previous){
+        indices = removeDot(n_active_previous,n_active_previous-n_active_particles,active=true,indices)
+    }
+    return indices
+}
+
+/**
+ * Create a smoother traverse of particles by breaking down the mini-steps with each time step
+ * by breaking down the distance with n_distance_interval
+ */
+function miniStep(){
+    if (traversed_distance<=distance){
+        for (i=0;i<(n_inactive_particles+n_active_particles);i++){             
+            //first go through inactive particles and then active particles
+            if (i<n_inactive_particles){
+                index=indices["inactive"][i];
+                dot_index = document.getElementById("dot-inactive"+index);
+
+            }else{
+                index=indices["active"][i-n_inactive_particles];
+                dot_index = document.getElementById("dot-active"+index);
+            }
+            compStyle = window.getComputedStyle(dot_index);
+            
+            topValue = compStyle.getPropertyValue("top").replace("px", "");
+            leftValue = compStyle.getPropertyValue("left").replace("px","");
+            //TODO: refactor the bottom
+            within_boundary = true
+            if ((Number(leftValue) + dx[i])>x_bounding_right){
+                within_boundary = false
+                x_end_position[i] = x_bounding_right - Math.abs(Number(leftValue)+dx[i]-x_bounding_right);
+                dx[i] = -dx[i]
+
+            } else if ((Number(leftValue) + dx[i])<x_bounding_left){
+                within_boundary = false
+                x_end_position[i] = x_bounding_left + Math.abs(Number(leftValue)+dx[i]-x_bounding_left);
+                dx[i] = -dx[i]
+            }
+
+            if ((Number(topValue) + dy[i])<y_bounding_top){
+                within_boundary = false
+                y_end_position[i] = y_bounding_top +  Math.abs(Number(topValue)+dy[i]-y_bounding_top);
+                dy[i]=-dy[i]
+
+            } else if ((Number(topValue) + dy[i])>y_bounding_bottom){
+                within_boundary = false
+                y_end_position[i] = y_bounding_bottom - Math.abs(Number(topValue)+dy[i]-y_bounding_bottom);
+                dy[i]=-dy[i]
+            }
+
+            if (within_boundary){
+                x_end_position[i] = Number(leftValue) + dx[i];
+                y_end_position[i] = Number(topValue) + dy[i];
+            }
+
+            dot_index.style.top = y_end_position[i] + "px";
+            dot_index.style.left = x_end_position[i] + "px";                  
+        }
+        //if condition then flag that circle as active (red) - refactor below
+        for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
+            active_index = indices["active"][i_active_index]
+            dot_active_index = document.getElementById("dot-active"+active_index);
+            compStyle = window.getComputedStyle(dot_active_index);
+            
+            topValue_active = Number(compStyle.getPropertyValue("top").replace("px", ""));
+            leftValue_active = Number(compStyle.getPropertyValue("left").replace("px",""));
+            for (let i_inactive_index=0; i_inactive_index<indices["inactive"].length;i_inactive_index++){
+                inactive_index = indices["inactive"][i_inactive_index]
+                dot_inactive_index = document.getElementById("dot-inactive"+inactive_index);
+                compStyle = window.getComputedStyle(dot_inactive_index);
+                topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
+                leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
+                if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
+                    new_active_index = indices["active"].length+1
+                    document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
+                    document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                    indices["inactive"].splice(i_inactive_index,1)
+                    indices["active"].push(new_active_index)
+                    n_active_particles+=1
+                    n_inactive_particles-=1
+                }                    
+            }
+        }
+        traversed_distance +=distance/n_distance_interval;
+        setTimeout(miniStep,step_delay_time)
+    }
+}
