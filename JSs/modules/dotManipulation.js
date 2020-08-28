@@ -12,7 +12,7 @@ let x_bounding_right = coords['right']
 let y_bounding_top = coords['top']
 let y_bounding_bottom = coords['bottom']
 
-export {addDot,removeDot}
+export {addDot,removeDot,addOrRemove}
 
 /**
  * 
@@ -94,3 +94,31 @@ function removeDot(n_previous,dn,status,indices){
 }
 
 
+/**
+ * add or remove particles based on information from previous and current number of active
+ * and inactive particles
+ * @param {*} n_inactive_particles Number of inactive particles at the current step
+ * @param {*} n_inactive_previous Number of inactive particles at the previous step
+ * @param {*} n_active_particles Number of active particles at the current step
+ * @param {*} n_active_previous Number of active particles at the previous step
+ */
+function addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous){
+    //decide whether to add or remove inactive from HTML
+    if (n_inactive_particles>n_inactive_previous){
+        //can we shorten this invocation?
+        indices = addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,false,indices)
+    }
+    if (n_inactive_particles<n_inactive_previous){
+        indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,false,indices)
+    }
+
+    //decide whether to add or remove active particles from HTML
+    if (n_active_particles>n_active_previous){
+        //can we shorten this invocation?
+        indices = addDot(n_active_previous,n_active_particles - n_active_previous,true,indices)
+    }
+    if (n_active_particles<n_active_previous){
+        indices = removeDot(n_active_previous,n_active_previous-n_active_particles,true,indices)
+    }
+    return indices
+}

@@ -1,4 +1,4 @@
-import {addDot,removeDot} from "./modules/dotManipulation.js"
+import {addDot,addOrRemove} from "./modules/dotManipulation.js"
 import {scatterPlot} from "./modules/visuals.js"
 var compStyle=[],
     topValue=[],
@@ -64,7 +64,7 @@ function setPosition(){
 
     step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength=ETL();
 
-    indices = addOrRemove(n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
+    indices = addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
 
     //set dx,dy,x_end_position, y_end_position to null arrays
     dx=[],dy=[],x_end_position=[],y_end_position=[]
@@ -115,34 +115,7 @@ function distanceBreakdown(x_distance,y_distance,n_distance_interval){
     return dx, dy
 }
 
-/**
- * add or remove particles based on information from previous and current number of active
- * and inactive particles
- * @param {*} n_inactive_particles Number of inactive particles at the current step
- * @param {*} n_inactive_previous Number of inactive particles at the previous step
- * @param {*} n_active_particles Number of active particles at the current step
- * @param {*} n_active_previous Number of active particles at the previous step
- */
-function addOrRemove(n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous){
-    //decide whether to add or remove inactive from HTML
-    if (n_inactive_particles>n_inactive_previous){
-        //can we shorten this invocation?
-        indices = addDot(n_inactive_previous,n_inactive_particles - n_inactive_previous,active=false,indices)
-    }
-    if (n_inactive_particles<n_inactive_previous){
-        indices = removeDot(n_inactive_previous,n_inactive_previous-n_inactive_particles,active=false,indices)
-    }
 
-    //decide whether to add or remove active particles from HTML
-    if (n_active_particles>n_active_previous){
-        //can we shorten this invocation?
-        indices = addDot(n_active_previous,n_active_particles - n_active_previous,active=true,indices)
-    }
-    if (n_active_particles<n_active_previous){
-        indices = removeDot(n_active_previous,n_active_previous-n_active_particles,active=true,indices)
-    }
-    return indices
-}
 
 /**
  * Create a smoother traverse of particles by breaking down the mini-steps with each time step
