@@ -43,7 +43,7 @@ function addDot(n_previous,dn,status,indices){//function parameter list too long
         y_position = y_bounding_bottom + Math.ceil((y_bounding_top-y_bounding_bottom)/2);
         x = document.createElement('div');
         if (status){
-            x.style.backgroundColor="darkred"
+            x.style.backgroundColor="red"
             indices["active"].push(i_start_active+i)
             x.setAttribute("id","dot-active" + (i_start_active+i))
         }else{
@@ -185,7 +185,7 @@ function interactionCheck(indices,n_active_particles,n_inactive_particles,streng
                 if (activity_strength>strength_rand){
                     let new_active_index = indices["active"].length+1
                     document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
-                    document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                    document.getElementById("dot-active"+new_active_index).style.backgroundColor="red"
                     indices["inactive"].splice(i_inactive_index,1)
                     indices["active"].push(new_active_index)
                     n_active_particles+=1

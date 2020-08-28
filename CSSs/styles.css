@@ -89,7 +89,7 @@ p {
 #dot-active {
     height: 25px;
     width: 25px;
-    background-color:darkgreen;
+    background-color:red
     border-radius: 50%;
     position: absolute;
     top: 500px;
