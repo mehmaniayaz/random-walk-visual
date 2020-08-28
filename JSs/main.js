@@ -27,16 +27,6 @@ var compStyle=[],
     indices = {"inactive":[],"active":[]},
     index,
     dot_index
-
-
-//obtain the coordinates of the bounding box for particles to remain within
-let elem = document.getElementById("box-container"),
-    coords = elem.getBoundingClientRect(),
-    x_bounding_left = coords['left'],
-    x_bounding_right = coords['right'],
-    y_bounding_top = coords['top'],
-    y_bounding_bottom = coords['bottom']
-
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
 indices= addDot(0,n_inactive_particles,active=false,indices)    
 

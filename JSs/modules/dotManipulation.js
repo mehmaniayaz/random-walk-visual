@@ -189,12 +189,21 @@ function interactionCheck(indices,n_active_particles,n_inactive_particles){
                 indices["active"].push(new_active_index)
                 n_active_particles+=1
                 n_inactive_particles-=1
+                document.getElementById("id-inactive-particle-number").value = n_inactive_particles
+                document.getElementById("id-active-particle-number").value = n_active_particles
             }                    
         }
     }
     return [indices, n_active_particles,n_inactive_particles]
 }
 
+/**
+ * 
+ * @param {css attribute} topValue the y coordinate of particle
+ * @param {css attribute} leftValue the x coordinate of particle
+ * @param {integer} dx_i the x coordinate for the particle ministep
+ * @param {integer} dy_i the y coordinate for particle ministep
+ */
 function boundaryCorrection(topValue,leftValue,dx_i,dy_i){
     let within_boundary = true
     let x_end_position_i,y_end_position_i
