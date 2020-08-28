@@ -23,10 +23,10 @@ var compStyle=[],
     n_active_previous=0,
     elapsedTime=0,
     active=false,
-    activity_strength,
     indices = {"inactive":[],"active":[]},
     index,
-    dot_index
+    dot_index,
+    strength_rand
 n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
 indices= addDot(0,n_inactive_particles,active=false,indices)    
 
@@ -41,7 +41,7 @@ function setPosition(){
     n_inactive_previous = n_inactive_particles;
     n_active_previous = n_active_particles;
 
-    [step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength]=ETL();
+    [step_delay_time,distance,n_inactive_particles,n_active_particles]=ETL();
 
     indices = addOrRemove(indices,n_inactive_particles,n_inactive_previous,n_active_particles,n_active_previous);
 
@@ -49,6 +49,7 @@ function setPosition(){
     dx=[],dy=[],x_end_position=[],y_end_position=[]
     traversed_distance = 0; //distance particles have traveled at each mini-time step
     for (i=0;i<(n_inactive_particles+n_active_particles);i++){
+        strength_rand = Math.random()*100
         angle = Math.random()*2*Math.PI; //select a random angle for the particle to head to
         x_distance =  Math.cos(angle)*distance; //determine the x-coordinate distance of that direction
         y_distance = Math.sin(angle)*distance; //determine the y-coordinate distancee of that direction
@@ -89,7 +90,7 @@ function miniStep(){
             dot_index.style.left = x_end_position[i] + "px";                  
         }
 
-        [indices,n_active_particles,n_inactive_particles] = interactionCheck(indices,n_active_particles,n_inactive_particles);
+        [indices,n_active_particles,n_inactive_particles] = interactionCheck(indices,n_active_particles,n_inactive_particles,strength_rand);
     
         traversed_distance +=distance/n_distance_interval;
         setTimeout(miniStep,step_delay_time)

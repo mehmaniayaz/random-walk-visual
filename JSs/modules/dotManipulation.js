@@ -157,8 +157,7 @@ function ETL(){
     let distance = Number(document.getElementById("id-particle-distance").value);
     let n_inactive_particles = Number(document.getElementById("id-inactive-particle-number").value);
     let n_active_particles = Number(document.getElementById("id-active-particle-number").value);
-    let activity_strength = Number(document.getElementById("id-activity-strength").value);
-    return [step_delay_time,distance,n_inactive_particles,n_active_particles,activity_strength];
+    return [step_delay_time,distance,n_inactive_particles,n_active_particles];
 }
 
 /**
@@ -167,7 +166,8 @@ function ETL(){
  * @param {Integer} n_active_particles Number of current active particles
  * @param {Integer} n_inactive_particles Number of current inactive particles
  */
-function interactionCheck(indices,n_active_particles,n_inactive_particles){
+function interactionCheck(indices,n_active_particles,n_inactive_particles,strength_rand){
+    let activity_strength = Number(document.getElementById("id-activity-strength").value);
     //if condition then flag that circle as active (red) - refactor below
     for (let i_active_index=0;i_active_index<indices["active"].length;i_active_index++){
         let active_index = indices["active"][i_active_index];
@@ -182,15 +182,17 @@ function interactionCheck(indices,n_active_particles,n_inactive_particles){
             let topValue_inactive = Number(compStyle.getPropertyValue("top").replace("px", ""));
             let leftValue_inactive = Number(compStyle.getPropertyValue("left").replace("px",""));
             if (Math.sqrt((Math.pow(leftValue_active-leftValue_inactive,2)+Math.pow(topValue_active-topValue_inactive,2)))<25){
-                let new_active_index = indices["active"].length+1
-                document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
-                document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
-                indices["inactive"].splice(i_inactive_index,1)
-                indices["active"].push(new_active_index)
-                n_active_particles+=1
-                n_inactive_particles-=1
-                document.getElementById("id-inactive-particle-number").value = n_inactive_particles
-                document.getElementById("id-active-particle-number").value = n_active_particles
+                if (activity_strength>strength_rand){
+                    let new_active_index = indices["active"].length+1
+                    document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
+                    document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
+                    indices["inactive"].splice(i_inactive_index,1)
+                    indices["active"].push(new_active_index)
+                    n_active_particles+=1
+                    n_inactive_particles-=1
+                    document.getElementById("id-inactive-particle-number").value = n_inactive_particles
+                    document.getElementById("id-active-particle-number").value = n_active_particles       
+                } 
             }                    
         }
     }
