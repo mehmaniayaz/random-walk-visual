@@ -1,5 +1,5 @@
 ### Motivation
-In this project we are interested in visualizing random walkers and quantifying potentially interesting associated emergent behaviors using JavaScript! Random walking (also known as Brownian motion) is a commonly observed phenomenon in nature. Its occurrence spans from the dispersal of pollen in the air to literal pedestrians "randomly" walking in a city.
+In this project we are interested in visualizing random walkers and quantifying potentially interesting emergent behaviors using JavaScript! Random walking (also known as Brownian motion) is a commonly observed phenomenon in nature. Its occurrence spans from the dispersal of pollen in the air to literal pedestrians "randomly" walking in a city.
 
 ### Status
 This project is currently under development. Stay tuned for additional features or feel free to add your own!
