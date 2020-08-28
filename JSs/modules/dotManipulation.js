@@ -37,7 +37,7 @@ function addDot(n_previous,dn,status,indices){//function parameter list too long
         i_start_inactive=0
     }
 
-    for (i=n_previous+1;i<=(n_previous + dn);i++){
+    for (i=0;i<dn;i++){
         angle = Math.random()*2*Math.PI;
         x_position = x_bounding_left + Math.ceil((x_bounding_right-x_bounding_left)/2);
         y_position = y_bounding_bottom + Math.ceil((y_bounding_top-y_bounding_bottom)/2);

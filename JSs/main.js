@@ -193,7 +193,7 @@ function setPosition(){
                         new_active_index = indices["active"].length+1
                         document.getElementById("dot-inactive"+inactive_index).setAttribute("id","dot-active" + new_active_index);
                         document.getElementById("dot-active"+new_active_index).style.backgroundColor="darkred"
-                        indices["inactive"].splice(i_inactive_index)
+                        indices["inactive"].splice(i_inactive_index,1)
                         indices["active"].push(new_active_index)
                         n_active_particles+=1
                         n_inactive_particles-=1
