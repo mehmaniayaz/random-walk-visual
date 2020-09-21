@@ -12,7 +12,7 @@ This project is currently under development. Stay tuned for additional features 
 ```
 The attached demo shows how active particles activate inactive particles during Brownian motion. The interaction strength can be set by the user and the number of active particles is visualized in a scatter plot. This demonstration can serve as an analogue for disease spread amongst occupants of a room. 
 
-<img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/reactive_demo.gif" width="600" />
+<img src="https://github.com/mehmaniayaz/random-walk-visual/blob/master/rw_demo.gif" width="600" />
 
 ### Contribute
 Contributions are welcome! Feel free to pull request - for considerable changes, please open an issue. 
